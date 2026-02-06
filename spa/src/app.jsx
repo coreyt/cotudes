@@ -55,7 +55,7 @@ function App() {
     loadManifest();
   }, []);
 
-  // Initialize model adapter
+  // Initialize model adapter (without auto-loading SmolLM2)
   useEffect(() => {
     const adapter = new UnifiedModelAdapter();
     adapter.onStatusChange((status, message) => {
@@ -64,13 +64,25 @@ function App() {
     });
     modelRef.current = adapter;
 
-    // Auto-initialize the preferred model
-    const keys = getApiKeys();
-    adapter.switchModel(modelId, keys).catch(err => {
-      console.warn('Model init failed:', err.message);
-    });
+    // Only auto-initialize API models (they're instant and need no download)
+    if (modelId !== 'smol') {
+      const keys = getApiKeys();
+      adapter.switchModel(modelId, keys).catch(err => {
+        console.warn('Model init failed:', err.message);
+      });
+    }
 
     return () => adapter.destroy();
+  }, []);
+
+  // Explicit download trigger for SmolLM2
+  const handleDownloadModel = useCallback(async () => {
+    const keys = getApiKeys();
+    try {
+      await modelRef.current?.switchModel('smol', keys);
+    } catch (err) {
+      console.error('Model download failed:', err);
+    }
   }, []);
 
   // Handle model switch
@@ -155,6 +167,18 @@ function App() {
       <div class="main-area">
         {currentPractice ? (
           <>
+            {modelId === 'smol' && modelStatus === 'idle' && (
+              <div class="model-download-banner">
+                <span>SmolLM2 needs to be downloaded before the coach can help.</span>
+                <button class="btn btn-primary" onClick={handleDownloadModel}>Download Model</button>
+              </div>
+            )}
+            {modelId === 'smol' && modelStatus === 'loading' && (
+              <div class="model-download-banner loading">
+                <div class="spinner" />
+                <span>{modelStatusMessage || 'Loading...'}</span>
+              </div>
+            )}
             <div class="etude-header">
               <h2>{currentPractice.etude_id}: {currentPractice.title}</h2>
               <div class="etude-axiom">"{currentPractice.axiom}"</div>
@@ -191,7 +215,18 @@ function App() {
           <div class="welcome-screen">
             <h2>cotudes practice</h2>
             <p>A coaching companion for AI agent collaboration skills.</p>
-            <p>Select an etude from the sidebar to get started.</p>
+            {modelId === 'smol' && modelStatus === 'idle' ? (
+              <button class="btn btn-download" onClick={handleDownloadModel}>
+                Download Model to Start
+              </button>
+            ) : modelId === 'smol' && modelStatus === 'loading' ? (
+              <div class="download-status">
+                <div class="spinner" />
+                <span>{modelStatusMessage || 'Loading...'}</span>
+              </div>
+            ) : (
+              <p>Select an etude from the sidebar to get started.</p>
+            )}
           </div>
         )}
       </div>

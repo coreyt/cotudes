@@ -1,16 +1,24 @@
 /**
  * Web Worker for SmolLM2 inference via Transformers.js.
  *
- * Runs in a separate thread to avoid blocking the UI.
- * Communicates via postMessage with the main thread.
+ * Based on https://github.com/mikeesto/smollm2-browser
+ * Uses AutoTokenizer + AutoModelForCausalLM for direct control.
  */
 
 /* global self */
 
-let pipeline = null;
-let tokenizer = null;
+import {
+  AutoTokenizer,
+  AutoModelForCausalLM,
+  TextStreamer,
+  InterruptableStoppingCriteria,
+} from '@huggingface/transformers';
 
 const MODEL_ID = 'HuggingFaceTB/SmolLM2-1.7B-Instruct';
+
+let tokenizer = null;
+let model = null;
+const stopping_criteria = new InterruptableStoppingCriteria();
 
 self.onmessage = async (event) => {
   const { type, id, payload } = event.data;
@@ -23,38 +31,29 @@ self.onmessage = async (event) => {
       await handleGenerate(id, payload);
       break;
     case 'abort':
-      // Future: implement AbortController support
+      stopping_criteria.interrupt();
       break;
   }
 };
 
-async function detectDevice() {
-  if (typeof navigator !== 'undefined' && navigator.gpu) {
-    try {
-      const adapter = await navigator.gpu.requestAdapter();
-      if (adapter) return 'webgpu';
-    } catch { /* WebGPU not available */ }
-  }
-  return 'wasm';
-}
-
 async function handleInit(id) {
   try {
-    self.postMessage({ type: 'status', id, status: 'loading', message: 'Loading Transformers.js...' });
+    // Check WebGPU availability
+    let device = 'wasm';
+    let dtype = 'q4';
 
-    const { pipeline: createPipeline, env } = await import(
-      'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3'
-    );
-
-    // Only use multi-threading if cross-origin isolated (COOP/COEP headers set)
-    if (self.crossOriginIsolated) {
-      env.backends.onnx.wasm.numThreads = 4;
+    if (typeof navigator !== 'undefined' && navigator.gpu) {
+      try {
+        const adapter = await navigator.gpu.requestAdapter();
+        if (adapter) {
+          device = 'webgpu';
+          dtype = 'q4f16';
+        }
+      } catch { /* WebGPU not available */ }
     }
 
-    // Detect preferred device before downloading
-    const preferredDevice = await detectDevice();
-    const deviceLabel = preferredDevice === 'webgpu' ? 'WebGPU' : 'WASM';
-    self.postMessage({ type: 'status', id, status: 'loading', message: `Using ${deviceLabel} backend. Downloading model (first time may take a while)...` });
+    const deviceLabel = device === 'webgpu' ? 'WebGPU' : 'WASM';
+    self.postMessage({ type: 'status', id, status: 'loading', message: `Using ${deviceLabel}. Downloading model (first time may take a while)...` });
 
     const progress_callback = (progress) => {
       if (progress.status === 'progress') {
@@ -84,32 +83,20 @@ async function handleInit(id) {
       }
     };
 
-    // Try preferred device, fall back to WASM if it fails at runtime.
-    // Model files are cached by Transformers.js so fallback won't re-download.
-    if (preferredDevice === 'webgpu') {
-      try {
-        pipeline = await createPipeline('text-generation', MODEL_ID, {
-          dtype: 'q4',
-          device: 'webgpu',
-          progress_callback,
-        });
-      } catch {
-        self.postMessage({ type: 'status', id, status: 'loading', message: 'WebGPU runtime failed, falling back to WASM...' });
-        pipeline = await createPipeline('text-generation', MODEL_ID, {
-          dtype: 'q4',
-          device: 'wasm',
-          progress_callback,
-        });
-      }
-    } else {
-      pipeline = await createPipeline('text-generation', MODEL_ID, {
-        dtype: 'q4',
-        device: 'wasm',
-        progress_callback,
-      });
-    }
+    tokenizer = await AutoTokenizer.from_pretrained(MODEL_ID, {
+      progress_callback,
+    });
 
-    tokenizer = pipeline.tokenizer;
+    model = await AutoModelForCausalLM.from_pretrained(MODEL_ID, {
+      dtype,
+      device,
+      progress_callback,
+    });
+
+    // Warmup: compile shaders / JIT with dummy input
+    self.postMessage({ type: 'status', id, status: 'loading', message: 'Compiling shaders and warming up...' });
+    const warmupInputs = tokenizer('a');
+    await model.generate({ ...warmupInputs, max_new_tokens: 1 });
 
     self.postMessage({ type: 'ready', id });
   } catch (error) {
@@ -118,7 +105,7 @@ async function handleInit(id) {
 }
 
 async function handleGenerate(id, { messages, system }) {
-  if (!pipeline) {
+  if (!model || !tokenizer) {
     self.postMessage({ type: 'error', id, error: 'Model not loaded' });
     return;
   }
@@ -131,24 +118,48 @@ async function handleGenerate(id, { messages, system }) {
     }
     chatMessages.push(...messages);
 
-    const output = await pipeline(chatMessages, {
-      max_new_tokens: 512,
-      temperature: 0.7,
-      top_p: 0.9,
-      do_sample: true,
-      return_full_text: false,
-      callback_function: (token) => {
-        // Stream tokens back to main thread
-        if (token?.length) {
-          const text = typeof token === 'string' ? token : pipeline.tokenizer.decode(token, { skip_special_tokens: true });
-          if (text) {
-            self.postMessage({ type: 'token', id, token: text });
-          }
-        }
-      },
+    const inputs = tokenizer.apply_chat_template(chatMessages, {
+      add_generation_prompt: true,
+      return_dict: true,
     });
 
-    const generated = output?.[0]?.generated_text || '';
+    const callback_function = (output) => {
+      if (output) {
+        self.postMessage({ type: 'token', id, token: output });
+      }
+    };
+
+    const streamer = new TextStreamer(tokenizer, {
+      skip_prompt: true,
+      skip_special_tokens: true,
+      callback_function,
+    });
+
+    stopping_criteria.reset();
+
+    const { sequences } = await model.generate({
+      ...inputs,
+      max_new_tokens: 512,
+      do_sample: true,
+      temperature: 0.7,
+      top_p: 0.9,
+      streamer,
+      stopping_criteria,
+      return_dict_in_generate: true,
+    });
+
+    const decoded = tokenizer.batch_decode(sequences, {
+      skip_special_tokens: true,
+    });
+
+    // Extract just the generated portion (after the prompt)
+    const fullText = decoded[0] || '';
+    const promptText = tokenizer.apply_chat_template(chatMessages, {
+      add_generation_prompt: true,
+      tokenize: false,
+    });
+    const generated = fullText.slice(promptText.length).trim();
+
     self.postMessage({ type: 'done', id, text: generated });
   } catch (error) {
     self.postMessage({ type: 'error', id, error: error.message });
