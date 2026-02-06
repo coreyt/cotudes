@@ -24,6 +24,7 @@ function App() {
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
   const [modelId, setModelId] = useState(() => getModelPreference());
   const [modelStatus, setModelStatus] = useState('idle');
+  const [modelStatusMessage, setModelStatusMessage] = useState('');
   const modelRef = useRef(null);
 
   // Load manifest on mount
@@ -57,8 +58,9 @@ function App() {
   // Initialize model adapter
   useEffect(() => {
     const adapter = new UnifiedModelAdapter();
-    adapter.onStatusChange((status) => {
+    adapter.onStatusChange((status, message) => {
       setModelStatus(status);
+      setModelStatusMessage(message || '');
     });
     modelRef.current = adapter;
 
@@ -207,7 +209,9 @@ function App() {
         <div class="status-bar-right">
           <span class="model-status">
             <span class={`model-status-dot ${modelStatus}`} />
-            {modelId === 'smol' ? 'SmolLM2' : modelId}: {modelStatus}
+            {modelStatusMessage && modelStatus === 'loading'
+              ? modelStatusMessage
+              : `${modelId === 'smol' ? 'SmolLM2' : modelId}: ${modelStatus}`}
           </span>
           <TokenGauge
             systemPrompt={systemPrompt}

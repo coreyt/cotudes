@@ -28,6 +28,16 @@ self.onmessage = async (event) => {
   }
 };
 
+async function detectDevice() {
+  if (typeof navigator !== 'undefined' && navigator.gpu) {
+    try {
+      const adapter = await navigator.gpu.requestAdapter();
+      if (adapter) return 'webgpu';
+    } catch { /* WebGPU not available */ }
+  }
+  return 'wasm';
+}
+
 async function handleInit(id) {
   try {
     self.postMessage({ type: 'status', id, status: 'loading', message: 'Loading Transformers.js...' });
@@ -36,21 +46,68 @@ async function handleInit(id) {
       'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3'
     );
 
-    // Prefer WebGPU, fall back to WASM
-    env.backends.onnx.wasm.numThreads = 4;
+    // Only use multi-threading if cross-origin isolated (COOP/COEP headers set)
+    if (self.crossOriginIsolated) {
+      env.backends.onnx.wasm.numThreads = 4;
+    }
 
-    self.postMessage({ type: 'status', id, status: 'loading', message: 'Downloading model (first time may take a while)...' });
+    // Detect preferred device before downloading
+    const preferredDevice = await detectDevice();
+    const deviceLabel = preferredDevice === 'webgpu' ? 'WebGPU' : 'WASM';
+    self.postMessage({ type: 'status', id, status: 'loading', message: `Using ${deviceLabel} backend. Downloading model (first time may take a while)...` });
 
-    pipeline = await createPipeline('text-generation', MODEL_ID, {
-      dtype: 'q4',
-      device: 'webgpu',
-    }).catch(() => {
-      self.postMessage({ type: 'status', id, status: 'loading', message: 'WebGPU unavailable, falling back to WASM...' });
-      return createPipeline('text-generation', MODEL_ID, {
+    const progress_callback = (progress) => {
+      if (progress.status === 'progress') {
+        const pct = Math.round(progress.progress || 0);
+        const name = progress.file?.split('/').pop() || '';
+        self.postMessage({
+          type: 'status',
+          id,
+          status: 'loading',
+          message: `Downloading ${name}... ${pct}%`,
+        });
+      } else if (progress.status === 'done') {
+        self.postMessage({
+          type: 'status',
+          id,
+          status: 'loading',
+          message: 'Loading model into memory...',
+        });
+      } else if (progress.status === 'initiate') {
+        const name = progress.file?.split('/').pop() || 'files';
+        self.postMessage({
+          type: 'status',
+          id,
+          status: 'loading',
+          message: `Fetching ${name}...`,
+        });
+      }
+    };
+
+    // Try preferred device, fall back to WASM if it fails at runtime.
+    // Model files are cached by Transformers.js so fallback won't re-download.
+    if (preferredDevice === 'webgpu') {
+      try {
+        pipeline = await createPipeline('text-generation', MODEL_ID, {
+          dtype: 'q4',
+          device: 'webgpu',
+          progress_callback,
+        });
+      } catch {
+        self.postMessage({ type: 'status', id, status: 'loading', message: 'WebGPU runtime failed, falling back to WASM...' });
+        pipeline = await createPipeline('text-generation', MODEL_ID, {
+          dtype: 'q4',
+          device: 'wasm',
+          progress_callback,
+        });
+      }
+    } else {
+      pipeline = await createPipeline('text-generation', MODEL_ID, {
         dtype: 'q4',
         device: 'wasm',
+        progress_callback,
       });
-    });
+    }
 
     tokenizer = pipeline.tokenizer;
 
