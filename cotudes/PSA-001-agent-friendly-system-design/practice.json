@@ -1,0 +1,133 @@
+{
+  "etude_id": "PSA-001",
+  "title": "Agent-Friendly System Design",
+  "axiom": "Architecture that relies on tribal knowledge is architecture that agents will violate.",
+  "competency": "Architecture for Agents",
+  "path": "principal-software-architect",
+  "tier_support": {
+    "smol": "limited",
+    "frontier": "full"
+  },
+  "coach_prompt_smol": "You are a coding practice coach guiding a student through an exercise about making implicit architectural invariants explicit for AI coding agents. The student is working with a Go event processing system called ledgerflow. The exercise has two parts: Part 1 adds a feature without documenting invariants (the agent will violate them), Part 2 adds ARCHITECTURE.md first. The lesson: architecture that relies on tribal knowledge is architecture that agents will violate. RULES: Never write code. Ask Socratic questions. Use the suggested questions as a starting point. Keep responses under 3 sentences. Do not reveal Part 2 content during Part 1. NOTE: This etude involves architectural reasoning that may exceed SmolLM2 capabilities.",
+  "coach_prompt_frontier": "You are an expert coding practice coach for the cotudes curriculum, guiding a student through PSA-001: Agent-Friendly System Design. This etude teaches how implicit architectural invariants cause agents to produce code that compiles and passes tests but violates undocumented rules.\n\nThe student will add an AccountClosed event to ledgerflow, a Go event processing system. The codebase has five implicit invariants: lifecycle ordering, handler naming convention (on<EventName>), non-negative balance enforcement, interface-only dependencies, and cache warm-up timing. The exercise follows a trap-then-correct pattern:\n\n**Part 1 (The Trap):** The student asks their agent to add AccountClosed without any architecture documentation. The agent will produce working code that violates multiple invariants -- wrong handler name, incorrect registration order, missing balance checks, concrete type imports, or ignoring cache timing.\n\n**Part 2 (The Correction):** The student creates an ARCHITECTURE.md that makes every invariant explicit, then gives the same task. The agent produces code that respects the constraints.\n\n**The Axiom:** \"Architecture that relies on tribal knowledge is architecture that agents will violate.\"\n\nYour role:\n- Ask Socratic questions to help the student discover insights themselves\n- During Part 1, do NOT hint at the trap or suggest creating documentation\n- During checkpoints, help them systematically evaluate invariant violations\n- During Part 2, help them think about what makes an effective ARCHITECTURE.md\n- During reflection, connect their experience to the axiom\n- You may review code snippets the student pastes and point out invariant violations\n- Never write implementation code yourself\n- Keep responses focused and under 5 sentences unless reviewing pasted code",
+  "phases": [
+    {
+      "id": "setup",
+      "label": "Getting Started",
+      "content_md": "## The Setup\n\nThe `starter/` directory contains **ledgerflow**, a Go event processing system for a financial platform. The system processes account lifecycle events: `AccountCreated`, `AccountActivated`, `AccountSuspended`, `TransactionProcessed`.\n\n```bash\ncd starter/\ngo build ./...\ngo test -race -count=1 ./...\n```\n\nThe codebase works. The tests pass. But the architecture contains implicit knowledge that no document captures:\n\n- Events must be processed in lifecycle order, enforced only by handler registration order in `main.go`\n- Event handlers follow the `on<EventName>` naming convention; the dispatcher silently drops non-matching handlers\n- Account balances must never go negative, enforced by checks scattered across three packages\n- Module A depends on module B's interface but never on B's concrete types\n- The cache must be warmed before the API accepts traffic, enforced by a `time.Sleep` in `main.go`\n\n**Your assignment**: Add a new `AccountClosed` event type and handler. When an account is closed, it should finalize the balance, emit a `BalanceFinalized` event, and mark the account as closed. Closing an account with a positive balance requires a final withdrawal.",
+      "coach_context": "The student is reading the setup for PSA-001. They haven't started coding yet. Help them understand the ledgerflow system and orient them to the starter code. The codebase has five implicit invariants that are not documented anywhere.",
+      "coach_goals": [
+        "Orient them to the starter code structure",
+        "Ask what they plan to tell their agent",
+        "Do NOT suggest writing architecture documentation -- let them approach naturally"
+      ],
+      "suggested_questions": [
+        "Have you built and tested the starter code? Does everything pass?",
+        "What would you naturally say to ask an agent to add the AccountClosed event?",
+        "Before you start, have you read through the existing handlers to see how they work?"
+      ]
+    },
+    {
+      "id": "part1_work",
+      "label": "Part 1: The Natural Approach",
+      "content_md": "## Part 1: The Natural Approach\n\nStart your agent in the `starter/` directory. Describe the feature:\n\n> \"Add an AccountClosed event type and handler. When an account is closed, finalize the balance, emit a BalanceFinalized event, and mark the account as closed. Closing an account with a positive balance requires a final withdrawal.\"\n\nLet the agent work. Run the tests. They will likely pass.",
+      "coach_context": "The student is about to give their agent a natural-language description of the AccountClosed feature. This is the trap phase -- the agent will produce working code that violates implicit invariants. Let them approach naturally.",
+      "coach_goals": [
+        "Ask what they told the agent",
+        "Do NOT reveal the trap or suggest documenting invariants",
+        "If they naturally document the architecture, note it but don't discourage it",
+        "Ask them to observe whether the tests pass"
+      ],
+      "suggested_questions": [
+        "What exactly did you say to your agent?",
+        "Do the tests pass? Does the code compile?",
+        "While the agent was working, did you notice it making any assumptions about the codebase?"
+      ]
+    },
+    {
+      "id": "part1_checkpoint",
+      "label": "Part 1: Checkpoint",
+      "content_md": "### Checkpoint\n\nThe tests pass, but inspect the code against the implicit invariants:\n\n- [ ] Is the new handler registered in the correct lifecycle order in `main.go`? (After `AccountSuspended`, before any post-close events.)\n- [ ] Does the handler follow the `on<EventName>` naming convention? (If not, the dispatcher silently ignores it.)\n- [ ] Does the balance finalization check enforce the non-negative invariant the same way the other packages do?\n- [ ] Does the new code depend on module interfaces (not concrete types)?\n- [ ] Does it account for the cache warm-up timing?\n\nCount the invariant violations. The code compiles. The tests pass. The bugs are invisible until production.",
+      "coach_context": "The student just finished Part 1 and is evaluating the agent's output against the implicit invariant checklist. Walk through each item. Help them see that passing tests do not mean correct code when invariants are undocumented.",
+      "coach_goals": [
+        "Work through each checklist item systematically",
+        "Ask them to count total invariant violations",
+        "Help them see the pattern: the agent produced locally correct but globally wrong code",
+        "Do not yet reveal the Part 2 approach"
+      ],
+      "checklist": [
+        "Is the new handler registered in the correct lifecycle order?",
+        "Does the handler follow the on<EventName> naming convention?",
+        "Does the balance finalization enforce the non-negative invariant?",
+        "Does the new code depend on module interfaces (not concrete types)?",
+        "Does it account for the cache warm-up timing?"
+      ],
+      "suggested_questions": [
+        "How many invariant violations did you find?",
+        "For each violation, would the bug be caught by tests or only in production?",
+        "What would a naming convention violation look like at runtime -- an error or silent failure?"
+      ]
+    },
+    {
+      "id": "part2_work",
+      "label": "Part 2: The Effective Approach",
+      "content_md": "## Part 2: The Effective Approach\n\nReset the codebase. Before starting a new session, create an `ARCHITECTURE.md` that makes every implicit invariant explicit:\n\n```markdown\n# Architecture Invariants\n\n## Event Processing Order\nEvents MUST be processed in lifecycle order:\nAccountCreated → AccountActivated → AccountSuspended → AccountClosed\nHandler registration order in main.go enforces this. New handlers must be\nregistered in the correct position.\n\n## Handler Naming Convention\nAll event handlers MUST be named `on<EventName>`. The dispatcher uses\nreflection to match handlers to events. A handler named `handleAccountClosed`\nwill be silently ignored. It must be `onAccountClosed`.\n\n## Balance Invariant\nAccount balances must NEVER go negative. This is enforced by checks in\nthe accounts, billing, and handlers packages. Any new code that modifies\na balance must include this check. There is no single enforcement point.\n\n## Module Dependencies\nPackages under internal/ must depend on interfaces, not concrete types.\nThe accounts package defines interfaces; the handlers package consumes them.\nNever import a concrete type from another internal package.\n\n## Init Order\nThe cache must be warmed before the API accepts traffic. Currently enforced\nby a sleep in main.go. Any new initialization must complete before the\nreadiness signal.\n```\n\nNow start a new session with the ARCHITECTURE.md in place. Give the same task description.",
+      "coach_context": "The student is now creating an ARCHITECTURE.md before prompting the agent. Help them think about what makes each invariant description effective -- specificity, examples of what NOT to do, and consequences of violation.",
+      "coach_goals": [
+        "Help them think about what makes architecture documentation effective for agents",
+        "Ask about invariant violations they observed in Part 1",
+        "Encourage specificity: naming patterns, ordering constraints, dependency rules",
+        "Ask them to compare the experience with Part 1"
+      ],
+      "suggested_questions": [
+        "Which Part 1 violations does the ARCHITECTURE.md directly address?",
+        "Is there anything you would add to the ARCHITECTURE.md beyond the sample?",
+        "How does it feel to document invariants before handing the task to an agent?"
+      ]
+    },
+    {
+      "id": "part2_checkpoint",
+      "label": "Part 2: Checkpoint",
+      "content_md": "### Checkpoint\n\nRun the same checklist from Part 1. Count the violations. Compare.\n\n- [ ] How many invariant violations remain?\n- [ ] Did the agent reference the ARCHITECTURE.md constraints?\n- [ ] Compare the two implementations: same feature, same agent, different context. What changed?",
+      "coach_context": "The student finished Part 2 and is comparing results with Part 1. Help them see the concrete difference that explicit architecture documentation made.",
+      "coach_goals": [
+        "Compare invariant violation counts between Part 1 and Part 2",
+        "Ask whether the agent referenced ARCHITECTURE.md in its reasoning",
+        "Highlight the difference: same task, same agent, different context, different results"
+      ],
+      "checklist": [
+        "How many invariant violations remain?",
+        "Did the agent reference the ARCHITECTURE.md constraints?",
+        "Compare the two implementations: same feature, same agent, different context. What changed?"
+      ],
+      "suggested_questions": [
+        "How do the violation counts compare to Part 1?",
+        "Did you see the agent explicitly mention ARCHITECTURE.md while working?",
+        "Were there any invariants that the documentation didn't help with? Why?"
+      ]
+    },
+    {
+      "id": "reflection",
+      "label": "Reflection",
+      "content_md": "## The Principle\n\nEvery codebase has tribal knowledge. Experienced engineers internalize it through months of code review, incident post-mortems, and hallway conversations. They know that handlers must be named a certain way, that balances must be checked in three places, that the cache needs warm-up time.\n\nAn agent has none of this context. It reads the code as-is, infers patterns from what's visible, and produces code that is locally correct but globally wrong. The bugs are the worst kind: they pass tests, survive code review, and appear only in production under specific conditions.\n\nThe fix is not more tests or better code review. The fix is making the architecture explicit. Every undocumented invariant is a bug waiting for the next contributor to introduce -- whether that contributor is a new hire, a contractor, or an AI agent.\n\nIf your architecture requires institutional memory to use correctly, it is architecture that agents will violate. And increasingly, it is architecture that humans will violate too.\n\n> **Architecture that relies on tribal knowledge is architecture that agents will violate.**\n\n## Reflection\n\nRecord in your interaction log:\n\n1. **Inventory**: How many implicit invariants did you identify? How many did the agent violate? Were there invariants even you missed on first read?\n2. **Cost of implicit**: For each violated invariant, what would the production impact be? A silent data corruption? A dropped event? A race condition?\n3. **Documentation debt**: In your own systems, how many invariants exist only as tribal knowledge? What would it take to make them explicit?\n4. **Design principle**: How would you design a new system where invariants are enforced by code rather than convention?",
+      "coach_context": "The student has completed both parts and is reflecting. Help them articulate the lesson and connect it to the axiom. This is where the learning crystallizes.",
+      "coach_goals": [
+        "Help them articulate what they learned in their own words",
+        "Connect their experience to the axiom",
+        "Ask about transfer to their real systems and codebases",
+        "Celebrate their insight"
+      ],
+      "reflection_questions": [
+        "How many invariants did the agent violate in Part 1 vs Part 2?",
+        "For each violation, what would the production impact have been?",
+        "In your own codebases, how many invariants exist only as tribal knowledge?",
+        "How would you design a system where invariants are enforced by code rather than convention?"
+      ],
+      "suggested_questions": [
+        "What's the one thing you'll do differently when designing systems for agent collaboration?",
+        "Can you think of a real incident caused by an undocumented invariant?",
+        "How would you describe the axiom in your own words?"
+      ]
+    }
+  ]
+}

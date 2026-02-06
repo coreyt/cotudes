@@ -1,0 +1,145 @@
+{
+  "etude_id": "ASE-001",
+  "title": "The Vague Request",
+  "axiom": "Agents don't read your mind -- the spec IS the product.",
+  "competency": "Specification Writing",
+  "path": "associate-software-engineer",
+  "tier_support": {
+    "smol": "full",
+    "frontier": "full"
+  },
+  "coach_prompt_smol": "You are a coding practice coach guiding a student through an exercise about specification writing for AI coding agents. The student is building a REST API for bookmarks. The exercise has two parts: Part 1 uses a vague description, Part 2 uses a detailed spec. The lesson: agents make dozens of implicit decisions when given vague instructions; a specification externalizes those decisions. RULES: Never write code. Ask Socratic questions. Use the suggested questions as a starting point. Keep responses under 3 sentences. Do not reveal Part 2 content during Part 1.",
+  "coach_prompt_frontier": "You are an expert coding practice coach for the cotudes curriculum, guiding a student through ASE-001: The Vague Request. This etude teaches specification writing for AI coding agents.\n\nThe student will build a REST API for managing bookmarks (CRUD endpoints) in TypeScript/Express. The exercise follows a trap-then-correct pattern:\n\n**Part 1 (The Trap):** The student gives their agent a vague description like 'add CRUD endpoints for bookmarks.' The agent will produce working code that makes many implicit decisions about status codes, validation, error formats, pagination, etc. Some decisions will be wrong.\n\n**Part 2 (The Correction):** The student writes a detailed spec.md before prompting the agent. The spec externalizes every decision. The agent produces code that matches the student's intent.\n\n**The Axiom:** \"Agents don't read your mind -- the spec IS the product.\"\n\nYour role:\n- Ask Socratic questions to help the student discover insights themselves\n- During Part 1, do NOT hint at the trap or reveal that a spec would help\n- During checkpoints, help them systematically evaluate the agent's output\n- During Part 2, help them think about what belongs in a specification\n- During reflection, connect their experience to the axiom\n- You may review code snippets the student pastes and point out implicit decisions\n- Never write implementation code yourself\n- Keep responses focused and under 5 sentences unless reviewing pasted code",
+  "phases": [
+    {
+      "id": "setup",
+      "label": "Getting Started",
+      "content_md": "## The Setup\n\nThe `starter/` directory contains a TypeScript Express server with:\n\n- A working health check endpoint (`GET /health`)\n- An in-memory data store pattern\n- A `Bookmark` interface (partially defined)\n- A test suite with Vitest configured\n- Build, test, and lint scripts\n\n```bash\ncd starter/\nnpm install\nnpm run check   # build + lint + test -- all should pass\n```\n\n**Your assignment**: Add CRUD endpoints for bookmarks:\n\n- `POST /bookmarks` -- create a bookmark\n- `GET /bookmarks` -- list bookmarks (with pagination)\n- `GET /bookmarks/:id` -- get a single bookmark\n- `PUT /bookmarks/:id` -- update a bookmark\n- `DELETE /bookmarks/:id` -- delete a bookmark\n\nA bookmark has: `id`, `url`, `title`, `tags` (string array), and `createdAt`.",
+      "coach_context": "The student is reading the setup for ASE-001. They haven't started coding yet. Help them understand what they're about to build and orient them to the starter code.",
+      "coach_goals": [
+        "Orient them to the starter code structure",
+        "Ask what they plan to tell their agent",
+        "Do NOT suggest writing a spec -- let them approach naturally"
+      ],
+      "suggested_questions": [
+        "What would you naturally say to ask an agent to build this?",
+        "Before you start, what decisions does the agent need to make about this API?",
+        "Have you looked at the starter code? What patterns does it already establish?"
+      ]
+    },
+    {
+      "id": "part1_work",
+      "label": "Part 1: The Natural Approach",
+      "content_md": "## Part 1: The Natural Approach\n\nStart your agent in the `starter/` directory. Describe the task in your own words -- however you would naturally ask for it. Something like:\n\n> \"Add CRUD endpoints for bookmarks to this Express app.\"\n\nLet the agent work. When it finishes, run `npm run check`. If the code compiles and tests pass, review what the agent produced.",
+      "coach_context": "The student is about to give their agent a natural-language description of the task. This is the trap phase -- let them approach naturally. Do not suggest writing a specification.",
+      "coach_goals": [
+        "Ask what they told the agent",
+        "Do NOT reveal the trap or suggest a spec",
+        "If they naturally write a spec, note it but don't discourage it",
+        "Ask them to observe the agent's decision-making"
+      ],
+      "suggested_questions": [
+        "What exactly did you say to your agent?",
+        "While the agent was working, did you notice it making decisions you hadn't specified?",
+        "Does the code compile and do the tests pass?"
+      ]
+    },
+    {
+      "id": "part1_checkpoint",
+      "label": "Part 1: Checkpoint",
+      "content_md": "### Checkpoint\n\nExamine the agent's output against this checklist. For each item, record pass/fail:\n\n- Does `POST` return 201 (not 200)?\n- Does `POST` validate that `url` is non-empty and a valid URL?\n- Does `POST` validate that `title` is non-empty?\n- Does `GET /bookmarks` support pagination (limit/offset or cursor)?\n- Does `GET /bookmarks/:id` return 404 for missing bookmarks?\n- Does `PUT` return 404 for missing bookmarks?\n- Does `DELETE` return 404 for missing bookmarks?\n- Are error responses in a consistent format (e.g., `{ error: string }`)?\n- Do all fields have proper TypeScript types (no `any`)?\n- Are edge cases tested (empty strings, missing fields, duplicate IDs)?\n\nCount the failures. This is your baseline.",
+      "coach_context": "The student just finished Part 1 and is evaluating the agent's output against the checklist. Walk through each item. Help them see that working code can still miss many requirements.",
+      "coach_goals": [
+        "Work through each checklist item systematically",
+        "Ask them to count total pass/fail",
+        "Help them see the pattern: the agent made reasonable but possibly wrong decisions",
+        "Do not yet reveal Part 2 approach"
+      ],
+      "checklist": [
+        "Does POST return 201 (not 200)?",
+        "Does POST validate that url is non-empty and a valid URL?",
+        "Does POST validate that title is non-empty?",
+        "Does GET /bookmarks support pagination (limit/offset or cursor)?",
+        "Does GET /bookmarks/:id return 404 for missing bookmarks?",
+        "Does PUT return 404 for missing bookmarks?",
+        "Does DELETE return 404 for missing bookmarks?",
+        "Are error responses in a consistent format (e.g., { error: string })?",
+        "Do all fields have proper TypeScript types (no any)?",
+        "Are edge cases tested (empty strings, missing fields, duplicate IDs)?"
+      ],
+      "suggested_questions": [
+        "How many items passed vs. failed?",
+        "For the failures, were the agent's choices unreasonable, or just different from what you expected?",
+        "Could you have predicted any of these failures before the agent started?"
+      ]
+    },
+    {
+      "id": "part2_work",
+      "label": "Part 2: The Effective Approach",
+      "content_md": "## Part 2: The Effective Approach\n\nReset the codebase to its original state. Before starting a new agent session, write a specification document. Not code -- a document that describes exactly what the API should do.\n\nCreate a file called `spec.md` with this structure:\n\n```markdown\n# Bookmark API Specification\n\n## Data Model\n- id: string (UUID v4, server-generated)\n- url: string (required, must be valid URL starting with http:// or https://)\n- title: string (required, 1-200 characters)\n- tags: string[] (optional, defaults to empty array, max 10 tags, each 1-50 chars)\n- createdAt: string (ISO 8601, server-generated)\n\n## Endpoints\n\n### POST /bookmarks\n- Request body: { url, title, tags? }\n- Success: 201 with created bookmark\n- Validation errors: 400 with { error: string, details: string[] }\n- Missing/invalid url: 400\n- Missing/empty title: 400\n\n### GET /bookmarks\n- Query params: limit (default 20, max 100), offset (default 0)\n- Success: 200 with { data: Bookmark[], total: number, limit: number, offset: number }\n\n### GET /bookmarks/:id\n- Success: 200 with bookmark\n- Not found: 404 with { error: \"Bookmark not found\" }\n\n### PUT /bookmarks/:id\n- Request body: partial bookmark (only fields to update)\n- Cannot update id or createdAt\n- Success: 200 with updated bookmark\n- Not found: 404\n- Validation: same rules as POST for provided fields\n\n### DELETE /bookmarks/:id\n- Success: 204 (no body)\n- Not found: 404\n\n## Error Format\nAll errors: { error: string, details?: string[] }\n```\n\nNow start a new agent session. Give it the spec:\n\n> \"Implement the bookmark API according to this specification. Follow the conventions in the existing codebase. Write tests that cover every status code and validation rule listed in the spec.\"",
+      "coach_context": "The student is now writing a spec before prompting the agent. Help them think about what belongs in a specification -- every decision that the agent would otherwise make implicitly.",
+      "coach_goals": [
+        "Help them think about what belongs in a spec",
+        "Ask about decisions they noticed the agent making in Part 1",
+        "Encourage specificity: status codes, validation rules, error formats",
+        "Ask them to compare the experience with Part 1"
+      ],
+      "suggested_questions": [
+        "What decisions from Part 1 are you now specifying explicitly?",
+        "Is there anything in the sample spec you disagree with or would change?",
+        "How does it feel to write the spec before the code exists?"
+      ]
+    },
+    {
+      "id": "part2_checkpoint",
+      "label": "Part 2: Checkpoint",
+      "content_md": "### Checkpoint\n\nRun the same checklist from Part 1. Count the failures. Compare.\n\n- How many checklist items pass now vs. Part 1?\n- How many follow-up prompts did the agent need?\n- Is the code more consistent with the existing codebase?",
+      "coach_context": "The student finished Part 2 and is comparing results with Part 1. Help them see the concrete difference the specification made.",
+      "coach_goals": [
+        "Compare checklist scores between Part 1 and Part 2",
+        "Ask about follow-up prompts needed",
+        "Highlight the role of the spec in reducing ambiguity"
+      ],
+      "checklist": [
+        "Does POST return 201 (not 200)?",
+        "Does POST validate that url is non-empty and a valid URL?",
+        "Does POST validate that title is non-empty?",
+        "Does GET /bookmarks support pagination (limit/offset or cursor)?",
+        "Does GET /bookmarks/:id return 404 for missing bookmarks?",
+        "Does PUT return 404 for missing bookmarks?",
+        "Does DELETE return 404 for missing bookmarks?",
+        "Are error responses in a consistent format (e.g., { error: string })?",
+        "Do all fields have proper TypeScript types (no any)?",
+        "Are edge cases tested (empty strings, missing fields, duplicate IDs)?"
+      ],
+      "suggested_questions": [
+        "How do the numbers compare to Part 1?",
+        "Did you need fewer follow-up prompts with the spec?",
+        "Were there any checklist items that still failed? Why?"
+      ]
+    },
+    {
+      "id": "reflection",
+      "label": "Reflection",
+      "content_md": "## The Principle\n\nWhen you ask an agent to \"add CRUD endpoints,\" you are asking it to make dozens of decisions: status codes, validation rules, error formats, pagination strategy, type definitions, test coverage. The agent will make all of these decisions. Most of them will be reasonable. Some will be wrong. The problem is you won't know which are wrong until you review the output -- and by then the code is written.\n\nA specification externalizes these decisions. Every constraint you write down is a constraint the agent won't have to guess about. The spec isn't overhead -- it's the interface between your intent and the agent's execution.\n\nThe instinct to \"just describe it and let the agent figure it out\" comes from a reasonable place: when YOU write code, you make these decisions implicitly as you type. But the agent isn't you. It has no access to your implicit expectations. The only expectations that exist for the agent are the ones you write down.\n\n> **Agents don't read your mind -- the spec IS the product.**\n\n## Reflection\n\nRecord in your interaction log:\n\n1. **Specificity gap**: List three decisions the agent made in Part 1 that you didn't think to specify. Were they correct? How would you have known if they weren't?\n2. **Time comparison**: How long did it take to write the spec vs. how long did you spend reviewing and correcting Part 1's output?\n3. **Test quality**: Compare the tests from Part 1 and Part 2. Which cover more edge cases? Which would you trust more in production?\n4. **Going forward**: For your next feature at work, what would a specification look like before you hand it to an agent?",
+      "coach_context": "The student has completed both parts and is reflecting. Help them articulate the lesson and connect it to the axiom. This is where the learning crystallizes.",
+      "coach_goals": [
+        "Help them articulate what they learned in their own words",
+        "Connect their experience to the axiom",
+        "Ask about transfer to their real work",
+        "Celebrate their insight"
+      ],
+      "reflection_questions": [
+        "How many checklist items failed in Part 1 vs Part 2?",
+        "In your own words, why does a specification help an agent produce better code?",
+        "Where in your daily work would specification writing help most?",
+        "What would you tell a colleague who says 'writing a spec is overhead'?"
+      ],
+      "suggested_questions": [
+        "What's the one thing you'll do differently in your next agent interaction?",
+        "Can you think of a time at work where a vague request led to rework?",
+        "How would you describe the axiom in your own words?"
+      ]
+    }
+  ]
+}

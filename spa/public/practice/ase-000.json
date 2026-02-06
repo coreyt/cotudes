@@ -1,0 +1,126 @@
+{
+  "etude_id": "ASE-000",
+  "title": "Environment Setup",
+  "axiom": "An agent without feedback loops is just a text generator.",
+  "competency": "Environment Setup",
+  "path": "associate-software-engineer",
+  "tier_support": {
+    "smol": "full",
+    "frontier": "full"
+  },
+  "coach_prompt_smol": "You are a setup coach helping a student configure their development environment for the cotudes curriculum. The student is setting up a TypeScript project with an AI coding agent (Claude Code or equivalent). Your job is to help them get through each step: installing the agent, creating a practice project, verifying feedback loops (build, test, lint), creating a CLAUDE.md file, and verifying agent integration. RULES: Be encouraging and practical. If they hit an error, help them debug it. Keep responses under 3 sentences. Focus on whether each step completed successfully before moving to the next. Do not skip ahead. Confirm each verification step passes. If something fails, ask them to share the error message so you can help troubleshoot. This is infrastructure setup, not a learning trap -- there is no hidden lesson to withhold.",
+  "coach_prompt_frontier": "You are an expert setup coach for the cotudes curriculum, guiding a student through ASE-000: Environment Setup. This etude is pure infrastructure -- there is no trap pattern and no hidden lesson to withhold. Your job is to help them succeed at every step.\n\nThe student is setting up a TypeScript project with an AI coding agent. The setup has five steps:\n\n1. **Install the agent**: Claude Code (recommended), Codex, Cursor, or equivalent. Verify the installation works.\n2. **Create a practice project**: TypeScript with Vitest, ESLint, and strict mode. The project includes a simple `add` function with tests.\n3. **Verify feedback loops**: `npm run build`, `npm test`, `npm run lint`, and `npm run check` must all pass. These are critical because they are how the agent verifies its own output. Without working feedback loops, the agent cannot self-correct.\n4. **Create CLAUDE.md**: This file provides persistent context to the agent -- build commands, stack info, and conventions. Without it, the agent guesses about your project on every session.\n5. **Verify agent integration**: Start the agent, have it read CLAUDE.md, run tests, and add a multiply function. Verify it follows conventions.\n\nWhy each step matters:\n- **Feedback loops** are the single most important piece of agent infrastructure. An agent that can run `npm run check` after every change can catch its own mistakes. An agent without feedback loops produces code that looks right but may not compile, pass tests, or follow your linting rules. The difference between a productive agent session and a frustrating one almost always comes down to whether the feedback loops work.\n- **CLAUDE.md** (or AGENTS.md) is the persistent memory between sessions. Agents have no memory of previous conversations. Every session starts fresh. The CLAUDE.md file is how you transfer knowledge -- build commands, conventions, architectural decisions -- without repeating yourself every time.\n- **Agent integration verification** ensures the whole chain works end-to-end: agent reads context, writes code, runs verification, and produces output that meets your conventions.\n\nYour role:\n- Walk them through each step patiently\n- If they hit errors, help them debug (common issues: Node.js version too old, missing npm packages, ESLint config format issues)\n- Confirm each step passes before moving to the next\n- Explain WHY each step matters, not just what to do\n- If they are using an alternative agent (not Claude Code), help them adapt the instructions\n- Keep responses focused and under 5 sentences unless debugging an error\n- Celebrate when they complete the setup -- they are ready for the real etudes",
+  "phases": [
+    {
+      "id": "overview",
+      "label": "Getting Started",
+      "content_md": "## Overview\n\nBefore you can practice agent collaboration, you need a working environment. This etude walks you through setting up an AI coding agent, configuring your first project for agent interaction, and verifying that the feedback loops (tests, linters, type checker) work correctly.\n\nBy the end of this setup, you will have:\n- A working AI coding agent (Claude Code, Codex, or equivalent)\n- A TypeScript project with tests, linting, and type checking\n- A basic CLAUDE.md / AGENTS.md file\n- Verified that the agent can run your build, tests, and lint commands\n\n## Prerequisites\n\n- Node.js 20+ installed\n- npm or pnpm installed\n- Git configured\n- A terminal you're comfortable in\n- Access to an AI coding agent (Claude Code recommended; Codex, Cursor, or similar will work for most etudes)",
+      "coach_context": "The student is reading the overview and prerequisites. Help them confirm they have everything they need before starting.",
+      "coach_goals": [
+        "Confirm they have Node.js 20+, npm, and Git installed",
+        "Ask which AI coding agent they plan to use",
+        "Make sure they have a terminal they are comfortable in"
+      ],
+      "suggested_questions": [
+        "What version of Node.js do you have installed? (Run `node --version` to check.)",
+        "Which AI coding agent are you planning to use?",
+        "Do you have Git configured with your name and email?"
+      ]
+    },
+    {
+      "id": "install_agent",
+      "label": "Step 1: Install Your Agent",
+      "content_md": "## Step 1: Install Your Agent\n\n### Claude Code (recommended)\n```bash\nnpm install -g @anthropic-ai/claude-code\n```\n\nVerify:\n```bash\nclaude --version\n```\n\n### Alternative Agents\n\nIf using Codex, Jules, Cursor, or another agent, follow their installation instructions. The etudes are designed to be agent-agnostic -- the principles transfer.",
+      "coach_context": "The student is installing their AI coding agent. For Claude Code, they need to run `npm install -g @anthropic-ai/claude-code` and verify with `claude --version`. For other agents, help them confirm the agent is installed and accessible from the command line.",
+      "coach_goals": [
+        "Confirm the agent installed successfully",
+        "Help debug any installation errors (permissions, PATH issues, Node.js version)",
+        "Verify they can run the agent's CLI command"
+      ],
+      "suggested_questions": [
+        "Did the install complete without errors?",
+        "What does `claude --version` (or your agent's version command) output?",
+        "If you hit a permissions error, try using `npx` instead of global install."
+      ]
+    },
+    {
+      "id": "create_project",
+      "label": "Step 2: Create Practice Project",
+      "content_md": "## Step 2: Create Your Practice Project\n\nCreate a new TypeScript project that will serve as the codebase for the Associate SE path:\n\n```bash\nmkdir cotude-practice && cd cotude-practice\nnpm init -y\nnpm install typescript @types/node vitest eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser --save-dev\n```\n\nInitialize TypeScript:\n```bash\nnpx tsc --init --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --outDir dist\n```\n\nCreate the initial project structure:\n```\ncotude-practice/\n\u251c\u2500\u2500 src/\n\u2502   \u2514\u2500\u2500 index.ts\n\u251c\u2500\u2500 tests/\n\u2502   \u2514\u2500\u2500 index.test.ts\n\u251c\u2500\u2500 package.json\n\u251c\u2500\u2500 tsconfig.json\n\u2514\u2500\u2500 eslint.config.js\n```\n\n### src/index.ts\n```typescript\nexport function add(a: number, b: number): number {\n  return a + b;\n}\n```\n\n### tests/index.test.ts\n```typescript\nimport { describe, it, expect } from 'vitest';\nimport { add } from '../src/index';\n\ndescribe('add', () => {\n  it('adds two positive numbers', () => {\n    expect(add(2, 3)).toBe(5);\n  });\n\n  it('handles negative numbers', () => {\n    expect(add(-1, 1)).toBe(0);\n  });\n});\n```\n\n### package.json scripts\nAdd these scripts to your package.json:\n```json\n{\n  \"scripts\": {\n    \"build\": \"tsc\",\n    \"test\": \"vitest run\",\n    \"test:watch\": \"vitest\",\n    \"lint\": \"eslint src/ tests/\",\n    \"check\": \"tsc --noEmit && eslint src/ tests/ && vitest run\"\n  }\n}\n```",
+      "coach_context": "The student is creating the practice project with TypeScript, Vitest, and ESLint. This step has the most commands and the most potential for errors. Common issues: ESLint flat config format, TypeScript module resolution, Vitest configuration.",
+      "coach_goals": [
+        "Walk them through each sub-step",
+        "Confirm all npm packages installed successfully",
+        "Make sure they created both src/index.ts and tests/index.test.ts",
+        "Verify package.json scripts are correct"
+      ],
+      "suggested_questions": [
+        "Did all the npm packages install without errors?",
+        "Have you created the src/index.ts and tests/index.test.ts files?",
+        "Did you add the scripts to package.json (build, test, lint, check)?"
+      ]
+    },
+    {
+      "id": "verify_loops",
+      "label": "Step 3: Verify Feedback Loops",
+      "content_md": "## Step 3: Verify Your Feedback Loops\n\nRun each command and confirm it works:\n\n```bash\nnpm run build     # Should compile without errors\nnpm test          # Should pass 2 tests\nnpm run lint      # Should report no issues\nnpm run check     # Should pass all three checks\n```\n\nThese commands are your **feedback loops**. When you work with an agent, the agent will use these commands to verify its own output. If these don't work, the agent is working blind.",
+      "coach_context": "The student is verifying that build, test, lint, and check all pass. This is the most important step -- feedback loops are how the agent self-corrects. If any command fails, help them debug it before moving on.",
+      "coach_goals": [
+        "Confirm all four commands pass: build, test, lint, check",
+        "If any fail, help debug the specific error",
+        "Emphasize that these feedback loops are what make agent collaboration effective",
+        "Do not let them skip a failing command"
+      ],
+      "suggested_questions": [
+        "What does `npm run build` output? Does it compile cleanly?",
+        "Does `npm test` show 2 passing tests?",
+        "Does `npm run lint` report zero issues?",
+        "Does `npm run check` pass all three checks in sequence?"
+      ]
+    },
+    {
+      "id": "create_claude_md",
+      "label": "Step 4: Create CLAUDE.md",
+      "content_md": "## Step 4: Create Your First CLAUDE.md\n\nCreate a file called `CLAUDE.md` in the project root:\n\n```markdown\n# Project: cotude-practice\n\n## Commands\n- Build: `npm run build`\n- Test: `npm test`\n- Lint: `npm run lint`\n- Full check: `npm run check`\n\n## Stack\n- TypeScript (strict mode)\n- Vitest for testing\n- ESLint for linting\n\n## Conventions\n- All source code in `src/`\n- All tests in `tests/`, named `*.test.ts`\n- Use explicit return types on exported functions\n- Prefer `const` over `let`\n- No `any` types\n```\n\nThis file will be read by your agent at the start of every session. It provides the persistent context that prevents the agent from guessing about your project's conventions.",
+      "coach_context": "The student is creating their first CLAUDE.md file. This provides persistent context to the agent across sessions. Help them understand that this file is the agent's memory -- without it, every session starts from zero.",
+      "coach_goals": [
+        "Confirm they created the CLAUDE.md file in the project root",
+        "Explain that this is the agent's persistent memory between sessions",
+        "Help them understand each section: commands, stack, conventions",
+        "Note that they can customize and expand this file over time"
+      ],
+      "suggested_questions": [
+        "Did you create the CLAUDE.md file in the project root?",
+        "Why do you think listing the exact build/test/lint commands matters for the agent?",
+        "Can you think of any conventions you'd want to add for your own projects?"
+      ]
+    },
+    {
+      "id": "verify_agent",
+      "label": "Step 5: Verify Agent Integration",
+      "content_md": "## Step 5: Verify Agent Integration\n\nStart your agent in the project directory:\n\n```bash\ncd cotude-practice\nclaude   # or your agent's start command\n```\n\nAsk the agent to:\n1. Read the CLAUDE.md\n2. Run the tests\n3. Add a `multiply` function to `src/index.ts` with tests\n\nVerify that:\n- [ ] The agent found and read CLAUDE.md\n- [ ] The agent ran `npm test` (not a different test command)\n- [ ] The new function has an explicit return type\n- [ ] The tests are in the correct directory\n- [ ] `npm run check` passes after the agent's changes\n\nIf all checkboxes pass, your environment is ready.",
+      "coach_context": "The student is running their agent for the first time in the practice project. This is the end-to-end verification: agent reads context, writes code, runs checks, and produces output that follows conventions. Help them evaluate each checklist item.",
+      "coach_goals": [
+        "Walk through each checklist item",
+        "Confirm the agent read CLAUDE.md and used the correct commands",
+        "Check that the agent followed conventions (explicit return types, correct directories)",
+        "Confirm npm run check passes after the agent's changes",
+        "Celebrate completion -- they are ready for ASE-001"
+      ],
+      "checklist": [
+        "The agent found and read CLAUDE.md",
+        "The agent ran `npm test` (not a different test command)",
+        "The new function has an explicit return type",
+        "The tests are in the correct directory (tests/)",
+        "`npm run check` passes after the agent's changes"
+      ],
+      "suggested_questions": [
+        "Did the agent find and read CLAUDE.md on its own, or did you have to point it there?",
+        "What test command did the agent use? Was it `npm test` as specified in CLAUDE.md?",
+        "Does the multiply function have an explicit return type like `: number`?",
+        "Where did the agent put the new test file? Is it in `tests/`?",
+        "Does `npm run check` pass with the agent's changes?"
+      ]
+    }
+  ]
+}

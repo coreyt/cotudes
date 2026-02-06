@@ -1,0 +1,138 @@
+{
+  "etude_id": "PSE-001",
+  "title": "The Architecture Review",
+  "axiom": "Agents architect in a vacuum -- your value is the context they cannot see.",
+  "competency": "Architecture for Agents",
+  "path": "principal-software-engineer",
+  "tier_support": {
+    "smol": "limited",
+    "frontier": "full"
+  },
+  "coach_prompt_smol": "You are a coding practice coach guiding a student through an exercise about architecture review for AI coding agents. The student is reviewing an agent-proposed architecture for a notification service within an existing e-commerce platform (Meridian Commerce). The exercise has two parts: Part 1 gives the agent only requirements and a template, Part 2 provides full organizational context (ADRs, system landscape). The lesson: agents architect in a vacuum and cannot see organizational constraints unless you provide them. RULES: Never write code or architecture. Ask Socratic questions. Use the suggested questions as a starting point. Keep responses under 3 sentences. Do not reveal Part 2 content during Part 1.",
+  "coach_prompt_frontier": "You are an expert coding practice coach for the cotudes curriculum, guiding a student through PSE-001: The Architecture Review. This etude teaches architecture review skills when working with AI coding agents.\n\nThe student will review an agent-proposed architecture for a notification service within Meridian Commerce, a mid-size e-commerce platform. The platform has organizational constraints: shared PostgreSQL cluster (ADR-001), event bus conventions (ADR-002), API gateway auth (ADR-003), PCI-DSS scoping (ADR-004), PgBouncer connection limits, and team ownership boundaries. The exercise follows a trap-then-correct pattern:\n\n**Part 1 (The Trap):** The student gives the agent only the requirements document and ADR template. The agent produces a technically sound architecture that violates organizational constraints it cannot see.\n\n**Part 2 (The Correction):** The student provides all ADRs, the system landscape, and explicit constraints. The agent produces an architecture that respects organizational context.\n\n**The Axiom:** \"Agents architect in a vacuum -- your value is the context they cannot see.\"\n\nYour role:\n- Ask Socratic questions to help the student discover insights themselves\n- During Part 1, do NOT hint at the trap or suggest providing ADRs\n- During checkpoints, help them systematically evaluate against organizational constraints\n- During Part 2, help them think about what context the agent needs\n- During reflection, connect their experience to the axiom\n- You may review architecture snippets the student pastes and point out constraint violations\n- Never write architecture or ADRs yourself\n- Keep responses focused and under 5 sentences unless reviewing pasted architecture",
+  "phases": [
+    {
+      "id": "setup",
+      "label": "Getting Started",
+      "content_md": "## The Setup\n\nThe `starter/` directory contains documentation for **Meridian Commerce**, a mid-size e-commerce platform:\n\n- `docs/system-landscape.md` -- Overview of existing services, infrastructure, and team ownership\n- `docs/adrs/` -- Existing Architecture Decision Records\n  - `ADR-001-shared-database.md` -- Shared PostgreSQL cluster policy\n  - `ADR-002-event-schema.md` -- Event bus schema conventions\n  - `ADR-003-auth-pattern.md` -- JWT auth via API gateway\n  - `ADR-004-pci-scope.md` -- PCI-DSS cardholder data environment boundaries\n- `docs/requirements-notification-service.md` -- Requirements for the new notification service\n- `services/` -- Existing service skeletons showing current patterns\n- `shared/` -- Shared Go packages used across services\n- `adr-template.md` -- The org's ADR template\n\nRead **all** documentation before proceeding. You are the principal engineer who knows this system. The agent does not.",
+      "coach_context": "The student is reading the setup for PSE-001. They need to familiarize themselves with the Meridian Commerce platform documentation, including all ADRs and the system landscape, before proceeding. They should internalize the organizational constraints before engaging the agent.",
+      "coach_goals": [
+        "Orient them to the platform documentation",
+        "Ensure they read ALL docs including ADRs and system landscape",
+        "Ask what organizational constraints they noticed",
+        "Do NOT suggest what to provide the agent -- let them approach naturally"
+      ],
+      "suggested_questions": [
+        "Have you read all the documentation in the starter directory?",
+        "What organizational constraints did you notice across the ADRs?",
+        "How would you describe the Meridian Commerce architecture to a new team member?"
+      ]
+    },
+    {
+      "id": "part1_work",
+      "label": "Part 1: The Natural Approach",
+      "content_md": "## Part 1: The Natural Approach\n\nStart your agent. Provide the requirements document and ask:\n\n> \"Design the architecture for this notification service. Produce an ADR following our template.\"\n\nGive the agent the requirements document and the ADR template. **Do not** provide the existing ADRs, the system landscape, or any organizational constraints beyond what's in the requirements doc.\n\nReview the agent's proposed architecture.",
+      "coach_context": "The student is about to give their agent the requirements and ADR template without organizational context. This is the trap phase -- the agent will produce a technically sound architecture that violates organizational constraints. Do not suggest providing additional context.",
+      "coach_goals": [
+        "Ask what they provided to the agent",
+        "Do NOT reveal the trap or suggest providing ADRs",
+        "If they naturally provide ADRs, note it but do not discourage it",
+        "Ask them to observe the architecture the agent proposes"
+      ],
+      "suggested_questions": [
+        "What exactly did you give the agent?",
+        "Does the proposed architecture look technically sound?",
+        "Did the agent ask any clarifying questions, or did it just proceed?"
+      ]
+    },
+    {
+      "id": "part1_checkpoint",
+      "label": "Part 1: Checkpoint",
+      "content_md": "### Checkpoint\n\nThe agent's architecture likely looks reasonable. Evaluate it against these organizational constraints (which you know but the agent does not):\n\n- [ ] **Database**: Does it propose its own database, or use the shared PostgreSQL cluster per ADR-001?\n- [ ] **Events**: Does it follow the event schema convention from ADR-002?\n- [ ] **Auth**: Does it implement its own auth, or rely on the API gateway per ADR-003?\n- [ ] **PCI scope**: Does it handle payment data correctly per ADR-004 PCI scope?\n- [ ] **Connection pooling**: Does it account for PgBouncer's 200-connection limit?\n- [ ] **Team ownership**: Does it align with existing team boundaries?\n\nCount the violations. Record which constraints the agent missed and why it couldn't have known them.",
+      "coach_context": "The student just finished Part 1 and is evaluating the agent's architecture against organizational constraints. Walk through each item. Help them see that a technically sound architecture can still violate every organizational constraint.",
+      "coach_goals": [
+        "Work through each checklist item systematically",
+        "Ask them to count total violations",
+        "Help them see the pattern: the agent made technically reasonable but organizationally wrong decisions",
+        "Ask why the agent could not have known each constraint",
+        "Do not yet reveal Part 2 approach"
+      ],
+      "checklist": [
+        "Does it propose its own database, or use the shared PostgreSQL cluster per ADR-001?",
+        "Does it follow the event schema convention from ADR-002?",
+        "Does it implement its own auth, or rely on the API gateway per ADR-003?",
+        "Does it handle payment data correctly per ADR-004 PCI scope?",
+        "Does it account for PgBouncer's 200-connection limit?",
+        "Does it align with existing team boundaries?"
+      ],
+      "suggested_questions": [
+        "How many organizational constraints did the agent violate?",
+        "For each violation, was the agent's choice unreasonable -- or just uninformed?",
+        "Could the agent have discovered any of these constraints on its own?"
+      ]
+    },
+    {
+      "id": "part2_work",
+      "label": "Part 2: The Effective Approach",
+      "content_md": "## Part 2: The Effective Approach\n\nStart a fresh agent session. This time, provide:\n\n1. The requirements document\n2. The ADR template\n3. **All four existing ADRs**\n4. **The system landscape document**\n5. A summary of constraints the agent must respect\n\nYour prompt:\n\n> \"Design the architecture for the notification service. It must comply with all existing ADRs and fit within the system landscape. Here are the organizational constraints: [list the specific constraints from ADR-001 through ADR-004]. Produce an ADR following our template.\"",
+      "coach_context": "The student is now providing full organizational context to the agent: all ADRs, system landscape, and explicit constraints. Help them think about what context matters and how to communicate it effectively.",
+      "coach_goals": [
+        "Help them think about what context the agent needs",
+        "Ask about how they summarized the constraints",
+        "Encourage them to be explicit about organizational boundaries",
+        "Ask them to compare the agent's behavior with Part 1"
+      ],
+      "suggested_questions": [
+        "What context are you providing that was missing in Part 1?",
+        "How did you summarize the organizational constraints?",
+        "How does the agent's approach differ when given the full context?"
+      ]
+    },
+    {
+      "id": "part2_checkpoint",
+      "label": "Part 2: Checkpoint",
+      "content_md": "### Checkpoint\n\nEvaluate the new architecture against the same organizational constraints:\n\n- [ ] How many organizational constraints does it respect now?\n- [ ] Does it reference existing ADRs?\n- [ ] Does it fit the team ownership model?\n- [ ] Would you approve this ADR in a real review?\n\nCompare with `reference/ADR-notification-service.md`.",
+      "coach_context": "The student finished Part 2 and is comparing the new architecture against the same constraints from Part 1. Help them see the concrete difference that organizational context made.",
+      "coach_goals": [
+        "Compare constraint compliance between Part 1 and Part 2",
+        "Ask about references to existing ADRs",
+        "Highlight the role of context in shaping architecture",
+        "Ask whether they would approve this ADR in a real review"
+      ],
+      "checklist": [
+        "How many organizational constraints does it respect now?",
+        "Does it reference existing ADRs?",
+        "Does it fit the team ownership model?",
+        "Would you approve this ADR in a real review?"
+      ],
+      "suggested_questions": [
+        "How do the results compare to Part 1?",
+        "Does the architecture reference the existing ADRs by number?",
+        "Would you approve this ADR as-is, or does it still need revisions?"
+      ]
+    },
+    {
+      "id": "reflection",
+      "label": "Reflection",
+      "content_md": "## The Principle\n\nAn agent evaluating a technical problem will produce an architecture optimized for the problem as described. It will consider scalability, maintainability, separation of concerns, and standard patterns. The architecture will be technically defensible.\n\nBut architecture decisions do not exist in isolation. They exist within organizations that have:\n\n- **Shared infrastructure** with capacity constraints\n- **Compliance requirements** with hard legal boundaries\n- **Team structures** with ownership models\n- **Existing conventions** that reduce cognitive load across services\n- **Historical decisions** documented in ADRs that constrain future choices\n\nNone of this context is visible to the agent unless you provide it. A principal engineer's value is not in knowing design patterns -- the agent knows those too. Your value is knowing the organizational context that makes one technically sound architecture correct and another technically sound architecture wrong.\n\n> **Agents architect in a vacuum -- your value is the context they cannot see.**\n\n## Reflection\n\nRecord in your interaction log:\n\n1. **Inventory**: List every organizational constraint the agent violated in Part 1. For each, identify where that constraint is documented (or if it's undocumented tribal knowledge).\n2. **Sufficiency**: Was providing the ADRs and system landscape sufficient, or did the agent still need additional context? What was missing?\n3. **Generalization**: In your own organization, how many architectural constraints exist only as tribal knowledge? What would it take to make them discoverable?\n4. **Process**: How would you change your architecture review process to account for agent-proposed designs?",
+      "coach_context": "The student has completed both parts and is reflecting. Help them articulate the lesson and connect it to the axiom: agents architect in a vacuum and the principal engineer's value is the organizational context they provide.",
+      "coach_goals": [
+        "Help them articulate what they learned in their own words",
+        "Connect their experience to the axiom",
+        "Ask about transfer to their real work and organization",
+        "Encourage them to think about undocumented tribal knowledge"
+      ],
+      "reflection_questions": [
+        "How many constraints did the agent violate in Part 1 vs Part 2?",
+        "In your own words, why does organizational context matter for agent-proposed architecture?",
+        "How many architectural constraints in your own org exist only as tribal knowledge?",
+        "How would you change your architecture review process for agent-proposed designs?"
+      ],
+      "suggested_questions": [
+        "What's the one thing you'll do differently before asking an agent to design architecture?",
+        "In your own organization, where are architectural constraints documented?",
+        "How would you describe the axiom in your own words?"
+      ]
+    }
+  ]
+}

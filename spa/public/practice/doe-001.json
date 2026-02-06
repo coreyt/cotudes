@@ -1,0 +1,134 @@
+{
+  "etude_id": "DOE-001",
+  "title": "The CI Feedback Loop",
+  "axiom": "CI output designed for humans to read is CI output agents can't use -- design for both audiences.",
+  "competency": "Feedback Loop Design",
+  "path": "staff-devops-engineer",
+  "tier_support": {
+    "smol": "partial",
+    "frontier": "full"
+  },
+  "coach_prompt_smol": "You are a coding practice coach guiding a student through an exercise about CI feedback loop design for AI coding agents. The student is fixing a failing CI pipeline for a TypeScript metrics library, then redesigning it with structured output. The exercise has two parts: Part 1 uses unstructured CI output, Part 2 uses structured, agent-parseable output. The lesson: structured CI output lets agents fix issues in a single pass instead of iterating. RULES: Never write code. Ask Socratic questions. Use the suggested questions as a starting point. Keep responses under 3 sentences. Do not reveal Part 2 content during Part 1.",
+  "coach_prompt_frontier": "You are an expert coding practice coach for the cotudes curriculum, guiding a student through DOE-001: The CI Feedback Loop. This etude teaches feedback loop design for AI coding agents.\n\nThe student will fix a failing CI pipeline for a TypeScript metrics library (metrics-lib) that has intentional issues: a type error, a lint violation, a failing test, and a missing type annotation. The exercise follows a trap-then-correct pattern:\n\n**Part 1 (The Trap):** The student shows their agent the raw CI output and asks it to fix all failures. The agent will iterate multiple times, struggling with opaque error messages, cascading failures, and noise in the output.\n\n**Part 2 (The Correction):** The student redesigns the CI pipeline to produce structured, machine-readable output with file paths, line numbers, error codes, and GitHub Actions annotations. The agent fixes all issues in a single pass.\n\n**The Axiom:** \"CI output designed for humans to read is CI output agents can't use -- design for both audiences.\"\n\nYour role:\n- Ask Socratic questions to help the student discover insights themselves\n- During Part 1, do NOT hint at the trap or suggest restructuring CI output\n- During checkpoints, help them systematically evaluate the agent's iteration cost\n- During Part 2, help them think about what makes CI output agent-parseable\n- During reflection, connect their experience to the axiom\n- You may review CI output the student pastes and point out where an agent would struggle\n- Never write implementation code yourself\n- Keep responses focused and under 5 sentences unless reviewing pasted output",
+  "phases": [
+    {
+      "id": "setup",
+      "label": "Getting Started",
+      "content_md": "## The Setup\n\nThe `starter/` directory contains **metrics-lib**, a TypeScript library for application metrics with intentional issues:\n\n- A type error in one file\n- A lint violation in another\n- A failing test\n- A missing type annotation\n\nThe project includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that runs build, lint, and test in a single job. The workflow is functional but produces human-readable output only -- no structured error reporting, no annotations, no machine-readable results.\n\n```bash\ncd starter/\nnpm install\nnpm run ci    # This will fail -- that's intentional\n```\n\n**Your assignment in two phases**:\n\n1. Use an agent to fix all CI failures\n2. Redesign the CI pipeline to provide structured, agent-friendly output",
+      "coach_context": "The student is reading the setup for DOE-001. They haven't started fixing CI yet. Help them understand what they're about to work with and orient them to the starter code and its intentional failures.",
+      "coach_goals": [
+        "Orient them to the starter code structure and the intentional CI failures",
+        "Ask if they've run npm run ci and seen the output",
+        "Do NOT suggest restructuring CI output -- let them approach naturally"
+      ],
+      "suggested_questions": [
+        "Have you run npm run ci yet? What does the output look like?",
+        "How many different types of failures can you spot in the output?",
+        "What's your plan for getting the agent to fix these?"
+      ]
+    },
+    {
+      "id": "part1_work",
+      "label": "Part 1: The Natural Approach",
+      "content_md": "## Part 1: The Natural Approach\n\nStart your agent. Show it the CI output:\n\n```bash\nnpm run ci 2>&1 | head -100\n```\n\nAsk the agent:\n\n> \"The CI pipeline is failing. Fix all the issues so it passes.\"\n\nObserve how the agent works. It will see error output, attempt a fix, re-run CI, see new errors (or the same ones described differently), and iterate.",
+      "coach_context": "The student is about to show their agent the raw CI output and ask it to fix everything. This is the trap phase -- the agent will struggle with unstructured output. Let them observe naturally.",
+      "coach_goals": [
+        "Ask what they showed the agent and how they prompted it",
+        "Do NOT reveal the trap or suggest structured output",
+        "Encourage them to observe the agent's iteration pattern",
+        "Ask them to notice how many times the agent re-runs CI"
+      ],
+      "suggested_questions": [
+        "What exactly did you show the agent? The full output or a subset?",
+        "How many times has the agent re-run CI so far?",
+        "Did you notice the agent fixing something that then broke something else?"
+      ]
+    },
+    {
+      "id": "part1_checkpoint",
+      "label": "Part 1: Checkpoint",
+      "content_md": "### Checkpoint\n\nRecord in your interaction log:\n\n- [ ] How many CI runs did the agent need before all checks passed?\n- [ ] Did the agent fix issues in the correct order, or did it chase cascading errors?\n- [ ] How much of the CI output was useful to the agent vs. noise?\n- [ ] Did the agent misinterpret any error messages?\n- [ ] Count the total tokens/time spent on the iterative fix cycle.",
+      "coach_context": "The student just finished Part 1 and is evaluating how the agent performed with unstructured CI output. Walk through each checklist item. Help them see how much waste came from poor feedback loop design.",
+      "coach_goals": [
+        "Work through each checklist item systematically",
+        "Help them quantify the cost: iterations, tokens, time",
+        "Ask them to identify which parts of CI output were noise vs. signal",
+        "Do not yet reveal Part 2 approach"
+      ],
+      "checklist": [
+        "How many CI runs did the agent need before all checks passed?",
+        "Did the agent fix issues in the correct order, or did it chase cascading errors?",
+        "How much of the CI output was useful to the agent vs. noise?",
+        "Did the agent misinterpret any error messages?",
+        "Count the total tokens/time spent on the iterative fix cycle"
+      ],
+      "suggested_questions": [
+        "How many CI runs did the agent need? Was that more than you expected?",
+        "Can you point to a specific moment where the agent misread the CI output?",
+        "If you had to estimate, what percentage of the CI output was actually useful to the agent?"
+      ]
+    },
+    {
+      "id": "part2_work",
+      "label": "Part 2: The Effective Approach",
+      "content_md": "## Part 2: The Effective Approach\n\nReset the codebase to the broken state. Now, before asking the agent to fix anything, redesign the CI pipeline.\n\nCreate a new `.github/workflows/ci.yml` with these properties:\n\n1. **Separate jobs** for build, lint, and test (run in parallel where possible)\n2. **Structured error output** for each step:\n   - File path, line number, column, error code, and message\n   - GitHub Actions annotations (`::error file=...::message`)\n3. **Machine-readable test results** (JUnit XML or JSON reporter)\n4. **Summary step** that aggregates all results into a structured report\n5. **Exit codes** that distinguish between \"failed\" and \"errored\"\n\nYou can design this yourself or use the reference at `reference/.github/workflows/ci.yml` as a starting point.\n\nAlso create a local CI runner script (`ci-local.sh`) that produces the same structured output without needing GitHub Actions:\n\n```bash\n#!/bin/bash\n# Structured CI output for agent consumption\necho \"=== BUILD ===\"\nnpm run build 2>&1 | while IFS= read -r line; do\n  # Parse TypeScript errors into structured format\n  if [[ \"$line\" =~ ^(src/[^:]+):([0-9]+):([0-9]+).*error\\ TS([0-9]+):\\ (.*) ]]; then\n    echo \"::error file=${BASH_REMATCH[1]},line=${BASH_REMATCH[2]},col=${BASH_REMATCH[3]},code=TS${BASH_REMATCH[4]}::${BASH_REMATCH[5]}\"\n  fi\ndone\n# ... similar for lint and test\n```\n\nNow start a fresh agent session. Run the structured CI and show the output:\n\n```bash\nbash ci-local.sh\n```\n\nAsk the agent to fix the issues.",
+      "coach_context": "The student is now redesigning the CI pipeline to produce structured, agent-parseable output before asking the agent to fix the same issues. Help them think about what makes output machine-readable.",
+      "coach_goals": [
+        "Help them think about what makes CI output agent-parseable",
+        "Ask about the difference between human-readable and machine-readable formats",
+        "Encourage them to include file paths, line numbers, and error codes",
+        "Ask them to compare the agent's experience this time vs. Part 1"
+      ],
+      "suggested_questions": [
+        "What information does the agent need from CI output to fix an issue in one shot?",
+        "How are you handling the difference between root-cause errors and cascading errors?",
+        "What format are you using for the structured output? Why that format?"
+      ]
+    },
+    {
+      "id": "part2_checkpoint",
+      "label": "Part 2: Checkpoint",
+      "content_md": "### Checkpoint\n\n- [ ] How many iterations did the agent need this time?\n- [ ] Did it fix all issues in a single pass?\n- [ ] Did it correctly interpret the structured error locations?\n- [ ] Compare total tokens/time to Part 1.",
+      "coach_context": "The student finished Part 2 and is comparing results with Part 1. Help them see the concrete difference structured CI output made in agent performance.",
+      "coach_goals": [
+        "Compare iteration counts between Part 1 and Part 2",
+        "Ask about tokens/time difference",
+        "Highlight how structured output eliminated guesswork for the agent"
+      ],
+      "checklist": [
+        "How many iterations did the agent need this time?",
+        "Did it fix all issues in a single pass?",
+        "Did it correctly interpret the structured error locations?",
+        "Compare total tokens/time to Part 1"
+      ],
+      "suggested_questions": [
+        "How many iterations this time vs. Part 1?",
+        "Did the agent fix everything in a single pass? If not, what tripped it up?",
+        "What was the token/time cost compared to Part 1?"
+      ]
+    },
+    {
+      "id": "reflection",
+      "label": "Reflection",
+      "content_md": "## The Principle\n\nCI pipelines evolved to serve human developers. A human reads \"FAIL\" and scrolls up to find the red text. A human recognizes that the test failure on line 47 is probably related to the build error on line 12. A human knows to fix the type error first because the test failure might be a cascade.\n\nAn agent processing the same output sees a wall of text. It cannot distinguish error messages from status messages. It cannot tell which errors are root causes and which are cascades. It cannot find the file and line number buried in a stack trace formatted for human eyes.\n\nWhen you design CI output, you are designing a **feedback loop**. For human developers, an imprecise feedback loop costs minutes of scrolling. For agents iterating in a loop, an imprecise feedback loop costs multiple round-trips -- each one burning tokens and time.\n\nStructured CI output is not just an agent optimization. It benefits every consumer of CI results: dashboards, alerting systems, IDE integrations, and yes, AI agents. The agent use case simply makes the cost of unstructured output visible.\n\nAs the DevOps engineer, you build the feedback loops that make agents effective for everyone on the team. A CI pipeline that agents can parse is a CI pipeline that accelerates the entire development cycle.\n\n> **CI output designed for humans to read is CI output agents can't use -- design for both audiences.**\n\n## Reflection\n\nRecord in your interaction log:\n\n1. **Iteration cost**: How many agent iterations did Part 1 require vs. Part 2? What was the cost difference (tokens, time, frustration)?\n2. **Error parsing**: What specific CI output formats confused the agent in Part 1? How did structured output eliminate the confusion?\n3. **Dual audience**: Who else besides agents benefits from structured CI output? How does it change your team's debugging workflow?\n4. **Your pipelines**: Look at your actual CI/CD pipelines at work. What would it take to add structured output? What's the first step?",
+      "coach_context": "The student has completed both parts and is reflecting. Help them articulate the lesson and connect it to the axiom. This is where the learning crystallizes.",
+      "coach_goals": [
+        "Help them articulate what they learned in their own words",
+        "Connect their experience to the axiom about designing for both audiences",
+        "Ask about transfer to their real CI/CD pipelines at work",
+        "Celebrate their insight"
+      ],
+      "reflection_questions": [
+        "How many iterations did Part 1 require vs Part 2? What was the cost difference?",
+        "What specific CI output formats confused the agent in Part 1?",
+        "Who else besides agents benefits from structured CI output?",
+        "What would it take to add structured output to your CI pipelines at work?"
+      ],
+      "suggested_questions": [
+        "What's the one change you'll make to your CI pipelines after this exercise?",
+        "Can you think of other feedback loops at work that are designed for humans but consumed by agents?",
+        "How would you describe the axiom in your own words?"
+      ]
+    }
+  ]
+}

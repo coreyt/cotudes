@@ -1,0 +1,53 @@
+{
+  "etudes": [
+    {
+      "etude_id": "ASE-000",
+      "title": "Environment Setup",
+      "path": "associate-software-engineer",
+      "competency": "Environment Setup",
+      "practice_url": "./practice/ase-000.json"
+    },
+    {
+      "etude_id": "ASE-001",
+      "title": "The Vague Request",
+      "path": "associate-software-engineer",
+      "competency": "Specification Writing",
+      "practice_url": "./practice/ase-001.json"
+    },
+    {
+      "etude_id": "DME-001",
+      "title": "The Schema Design",
+      "path": "staff-data-management-engineer",
+      "competency": "Specification Writing",
+      "practice_url": "./practice/dme-001.json"
+    },
+    {
+      "etude_id": "DOE-001",
+      "title": "The CI Feedback Loop",
+      "path": "staff-devops-engineer",
+      "competency": "Feedback Loop Design",
+      "practice_url": "./practice/doe-001.json"
+    },
+    {
+      "etude_id": "PSA-001",
+      "title": "Agent-Friendly System Design",
+      "path": "principal-software-architect",
+      "competency": "Architecture for Agents",
+      "practice_url": "./practice/psa-001.json"
+    },
+    {
+      "etude_id": "PSE-001",
+      "title": "The Architecture Review",
+      "path": "principal-software-engineer",
+      "competency": "Architecture for Agents",
+      "practice_url": "./practice/pse-001.json"
+    },
+    {
+      "etude_id": "STE-001",
+      "title": "The CLAUDE.md",
+      "path": "staff-software-engineer",
+      "competency": "Context Engineering",
+      "practice_url": "./practice/ste-001.json"
+    }
+  ]
+}

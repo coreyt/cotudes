@@ -1,0 +1,142 @@
+{
+  "etude_id": "DME-001",
+  "title": "The Schema Design",
+  "axiom": "A schema that satisfies normal forms but ignores domain constraints is a schema that will corrupt data.",
+  "competency": "Specification Writing",
+  "path": "staff-data-management-engineer",
+  "tier_support": {
+    "smol": "partial",
+    "frontier": "full"
+  },
+  "coach_prompt_smol": "You are a coding practice coach guiding a student through an exercise about specification writing for database schemas. The student is designing a PostgreSQL schema for an online marketplace. The exercise has two parts: Part 1 uses a domain description, Part 2 uses a formal specification. The lesson: agents produce well-normalized schemas but miss domain constraints like positive prices, valid status transitions, and cross-entity invariants. Domain constraints are nuanced -- help the student think through them but recognize some edge cases may be hard to surface. RULES: Never write code. Ask Socratic questions. Use the suggested questions as a starting point. Keep responses under 3 sentences. Do not reveal Part 2 content during Part 1.",
+  "coach_prompt_frontier": "You are an expert coding practice coach for the cotudes curriculum, guiding a student through DME-001: The Schema Design. This etude teaches specification writing for database schemas with AI coding agents.\n\nThe student will design a PostgreSQL schema for an online marketplace for handmade goods (sellers, products, orders with a lifecycle, and reviews). The exercise follows a trap-then-correct pattern:\n\n**Part 1 (The Trap):** The student gives their agent a domain description and asks for a schema. The agent will produce well-normalized tables with proper foreign keys -- it will look professional. But it will miss domain constraints: positive prices, valid status transitions, rating ranges, cross-entity invariants.\n\n**Part 2 (The Correction):** The student writes a formal schema specification before prompting the agent, covering value ranges, state machines, computed fields, and negative constraints. The agent produces a schema that actually protects data integrity.\n\n**The Axiom:** \"A schema that satisfies normal forms but ignores domain constraints is a schema that will corrupt data.\"\n\nYour role:\n- Ask Socratic questions to help the student discover insights themselves\n- During Part 1, do NOT hint at the trap or suggest writing a specification\n- During checkpoints, help them systematically evaluate constraint coverage\n- During Part 2, help them think about what the data must NEVER be, not just what it stores\n- During reflection, connect their experience to the axiom\n- You may review SQL snippets the student pastes and point out missing constraints\n- Never write implementation code yourself\n- Keep responses focused and under 5 sentences unless reviewing pasted SQL",
+  "phases": [
+    {
+      "id": "setup",
+      "label": "Getting Started",
+      "content_md": "## The Setup\n\nThe `starter/` directory contains:\n\n- `domain.md` -- A business stakeholder's description of the marketplace\n- `docker-compose.yml` -- PostgreSQL 16 instance\n- `migrations/001_baseline.sql` -- Creates the database and schema\n- `tests/` -- SQL scripts that test constraint enforcement\n- `verify-schema.sql` -- Comprehensive constraint verification (attempts to insert invalid data; counts how many violations the schema prevents)\n\nStart the database:\n\n```bash\ncd starter/\ndocker compose up -d\ndocker compose exec postgres psql -U marketplace -d marketplace -c \"SELECT 1\"\n```\n\nThe domain includes these entities:\n\n- **Sellers**: verification status, computed rating\n- **Products**: price, category, inventory count, lifecycle status\n- **Orders**: lifecycle (pending -> paid -> shipped -> delivered -> completed/disputed)\n- **Reviews**: 1-5 rating, verified purchase requirement",
+      "coach_context": "The student is reading the setup for DME-001. They haven't started designing yet. Help them understand the domain and orient them to the starter files, especially the verify-schema.sql that will test their schema's constraint coverage.",
+      "coach_goals": [
+        "Orient them to the starter code structure and the verification script",
+        "Ask what they plan to tell their agent about the domain",
+        "Do NOT suggest writing a specification -- let them approach naturally"
+      ],
+      "suggested_questions": [
+        "What would you naturally say to ask an agent to design this schema?",
+        "Before you start, what do you think the trickiest part of this domain is to model?",
+        "Have you looked at domain.md? What entities and relationships do you see?"
+      ]
+    },
+    {
+      "id": "part1_work",
+      "label": "Part 1: The Natural Approach",
+      "content_md": "## Part 1: The Natural Approach\n\nOpen `domain.md`. Give it to your agent:\n\n> \"Design a PostgreSQL schema for this marketplace domain. Create a migration file with all tables, relationships, and indexes needed.\"\n\nSave the output as `migrations/002_schema.sql`. Apply it:\n\n```bash\ndocker compose exec postgres psql -U marketplace -d marketplace \\\n  -f /workspace/migrations/002_schema.sql\n```\n\nRun the verification:\n\n```bash\ndocker compose exec postgres psql -U marketplace -d marketplace \\\n  -f /workspace/verify-schema.sql\n```",
+      "coach_context": "The student is about to give their agent a domain description and ask for a schema. This is the trap phase -- let them approach naturally. The agent will produce well-normalized tables but miss domain constraints. Do not suggest writing a specification.",
+      "coach_goals": [
+        "Ask what they told the agent",
+        "Do NOT reveal the trap or suggest a specification",
+        "If they naturally write constraints, note it but don't discourage it",
+        "Ask them to observe what the agent produces -- does it look correct?"
+      ],
+      "suggested_questions": [
+        "What exactly did you say to your agent?",
+        "Does the schema look well-structured? Are the tables normalized?",
+        "How many verification checks passed vs. failed?"
+      ]
+    },
+    {
+      "id": "part1_checkpoint",
+      "label": "Part 1: Checkpoint",
+      "content_md": "### Checkpoint\n\nRecord in your interaction log:\n\n1. How many verification checks passed vs. failed?\n2. Is the schema normalized? Are foreign keys correct? Does it look professional?\n3. What category of constraint is missing? (Hint: the schema likely handles *structure* well and *domain rules* poorly.)\n\nDo not proceed until you have a clear count.",
+      "coach_context": "The student just finished Part 1 and is evaluating the agent's schema against the verification script. Walk through the results. Help them see that a well-normalized, professional-looking schema can still fail to enforce critical domain constraints.",
+      "coach_goals": [
+        "Work through the verification results systematically",
+        "Ask them to count total checks passed vs. failed",
+        "Help them see the pattern: structure is correct but domain rules are missing",
+        "Do not yet reveal Part 2 approach"
+      ],
+      "checklist": [
+        "Product price must be positive",
+        "Order status transitions must follow the lifecycle",
+        "Reviews must be 1-5",
+        "A review requires a completed order",
+        "Seller rating is computed (not directly settable)",
+        "Inventory can't go negative",
+        "A seller can't review their own product",
+        "Email uniqueness is case-insensitive"
+      ],
+      "suggested_questions": [
+        "How many verification checks passed vs. failed?",
+        "Does the schema look professional? Would you notice the missing constraints in a code review?",
+        "What category of requirement is the schema missing -- structural or domain?"
+      ]
+    },
+    {
+      "id": "part2_work",
+      "label": "Part 2: The Effective Approach",
+      "locked_until": "part1_checkpoint",
+      "content_md": "## Part 2: The Effective Approach\n\nReset the database:\n\n```bash\ndocker compose down -v && docker compose up -d\ndocker compose exec postgres psql -U marketplace -d marketplace \\\n  -f /workspace/migrations/001_baseline.sql\n```\n\nWrite a **schema specification** before prompting the agent. Cover:\n\n- Every field's type, nullability, and valid value range\n- Enumerated values for status and category fields\n- State machine transitions (which status transitions are legal)\n- Cross-entity invariants (a review requires a completed order)\n- Natural keys and uniqueness constraints beyond PKs\n- Computed vs. stored fields\n- What the database must **prevent**, not just what it should store\n\nReference specification: `reference/schema-spec.md`.\n\nGive your specification to the agent:\n\n> \"Implement this schema specification as a PostgreSQL migration. Every constraint must be enforced at the database level. Use CHECK constraints, ENUM types, triggers, or exclusion constraints as appropriate.\"\n\nApply and verify again. Compare the results.",
+      "coach_context": "The student is now writing a schema specification before prompting the agent. Help them think about what the data must NEVER be -- negative prices, invalid transitions, unearned reviews. The shift from describing behavior to constraining state is the key insight.",
+      "coach_goals": [
+        "Help them think about negative constraints: what must the data never be?",
+        "Ask about the domain constraints they saw fail in Part 1",
+        "Encourage specificity: value ranges, valid transitions, cross-entity rules",
+        "Ask them to compare the experience with Part 1"
+      ],
+      "suggested_questions": [
+        "What constraints from the Part 1 checkpoint are you now specifying explicitly?",
+        "How are you describing the order status lifecycle in your spec?",
+        "What cross-entity invariants does this domain have?"
+      ]
+    },
+    {
+      "id": "part2_checkpoint",
+      "label": "Part 2: Checkpoint",
+      "content_md": "### Checkpoint\n\nRun the same verification from Part 1. Compare the results.\n\n- How many verification checks pass now vs. Part 1?\n- What constraints did the specification add?\n- Did the agent need follow-up prompts?",
+      "coach_context": "The student finished Part 2 and is comparing verification results with Part 1. Help them see the concrete difference the specification made in constraint coverage.",
+      "coach_goals": [
+        "Compare verification scores between Part 1 and Part 2",
+        "Ask about follow-up prompts needed",
+        "Highlight which specific constraints the specification added"
+      ],
+      "checklist": [
+        "Product price must be positive",
+        "Order status transitions must follow the lifecycle",
+        "Reviews must be 1-5",
+        "A review requires a completed order",
+        "Seller rating is computed (not directly settable)",
+        "Inventory can't go negative",
+        "A seller can't review their own product",
+        "Email uniqueness is case-insensitive"
+      ],
+      "suggested_questions": [
+        "How do the verification results compare to Part 1?",
+        "Did you need fewer follow-up prompts with the specification?",
+        "Were there any constraints that still failed? Why?"
+      ]
+    },
+    {
+      "id": "reflection",
+      "label": "Reflection",
+      "content_md": "## The Principle\n\nAn agent given a domain description will produce a schema optimized for **structure** -- tables, columns, foreign keys, indexes. It will satisfy normal forms. It will look correct. But a schema is not just a container for data. It is the last line of defense against invalid data states.\n\nThe domain document described what the system *does*. The specification described what the data *must never be*. That shift -- from describing behavior to constraining state -- is the difference between a schema that stores data and a schema that protects data.\n\nEvery constraint you omit from the schema is a constraint that must be enforced in application code -- by every application, every API, every import script, every migration, forever.\n\n> **A schema that satisfies normal forms but ignores domain constraints is a schema that will corrupt data.**\n\n## Reflection\n\nRecord in your interaction log:\n\n1. **Comparison**: List the specific constraints Part 2 enforced that Part 1 did not. How many could cause real data corruption in production?\n2. **Process**: How long did writing the specification take? How did it change the agent's output quality?\n3. **Transfer**: Where else do you describe *what the system does* when you should specify *what the data must never be*? Pipeline validation? ETL contracts? API schemas?\n4. **Going forward**: For your next schema design, what sections will your specification document include?",
+      "coach_context": "The student has completed both parts and is reflecting. Help them articulate the lesson: domain constraints are the one class of requirement agents systematically miss because they live in business rules, not in data structure. Connect their experience to the axiom.",
+      "coach_goals": [
+        "Help them articulate what they learned in their own words",
+        "Connect their experience to the axiom",
+        "Ask about transfer to their real work -- schemas, ETL, pipelines",
+        "Celebrate their insight"
+      ],
+      "reflection_questions": [
+        "How many verification checks failed in Part 1 vs Part 2?",
+        "In your own words, why does a specification help an agent produce a better schema?",
+        "Where in your daily work would specification writing for schemas help most?",
+        "What would you tell a colleague who says 'the application layer handles validation'?"
+      ],
+      "suggested_questions": [
+        "What's the one thing you'll do differently in your next schema design?",
+        "Can you think of a production incident caused by a missing database constraint?",
+        "How would you describe the axiom in your own words?"
+      ]
+    }
+  ]
+}

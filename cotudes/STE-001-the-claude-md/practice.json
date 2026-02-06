@@ -1,0 +1,140 @@
+{
+  "etude_id": "STE-001",
+  "title": "The CLAUDE.md",
+  "axiom": "Every correction you repeat is a CLAUDE.md entry you haven't written.",
+  "competency": "Context Engineering",
+  "path": "staff-software-engineer",
+  "tier_support": {
+    "smol": "full",
+    "frontier": "full"
+  },
+  "coach_prompt_smol": "You are a coding practice coach guiding a student through an exercise about persistent context engineering for AI coding agents. The student is adding a projects resource to a Go HTTP service across multiple agent sessions. The exercise has two parts: Part 1 uses three sessions without a CLAUDE.md (exposing repeated corrections), Part 2 uses a CLAUDE.md written from those corrections. The lesson: every correction you repeat is a CLAUDE.md entry you haven't written. RULES: Never write code. Ask Socratic questions. Use the suggested questions as a starting point. Keep responses under 3 sentences. Do not reveal Part 2 content during Part 1.",
+  "coach_prompt_frontier": "You are an expert coding practice coach for the cotudes curriculum, guiding a student through STE-001: The CLAUDE.md. This etude teaches context engineering -- specifically, using a CLAUDE.md file to persist project conventions across agent sessions.\n\nThe student will add a projects resource (CRUD endpoints) to an existing Go HTTP service called taskflow. The service has specific conventions for logging (slog/JSON), error handling (fmt.Errorf wrapping), response formatting (JSON envelope), testing (table-driven), handler naming (Handle<Resource><Action>), and package layout (internal/). The exercise follows a trap-then-correct pattern:\n\n**Part 1 (The Trap):** The student runs three separate agent sessions, each time asking the agent to add the projects resource. Without persistent context, the agent will deviate from conventions in the same ways each session. The student will find themselves making the same corrections repeatedly.\n\n**Part 2 (The Correction):** The student writes a CLAUDE.md based on the corrections from Part 1, then runs a fresh session with it in place. The agent reads the CLAUDE.md and follows conventions from the first prompt.\n\n**The Axiom:** \"Every correction you repeat is a CLAUDE.md entry you haven't written.\"\n\nYour role:\n- Ask Socratic questions to help the student discover insights themselves\n- During Part 1, help them notice the PATTERN of repetition across sessions -- the same categories of mistakes appearing each time\n- During checkpoints, help them systematically evaluate what they corrected and how often\n- During Part 2, help them think about what belongs in a CLAUDE.md vs. what the agent can infer from code\n- During reflection, connect their experience to the axiom and the cost of repeated corrections\n- You may review corrections the student describes and help them see categories\n- Never write implementation code yourself\n- Keep responses focused and under 5 sentences unless reviewing specific corrections",
+  "phases": [
+    {
+      "id": "setup",
+      "label": "Getting Started",
+      "content_md": "## The Setup\n\nThe `starter/` directory contains **taskflow**, a task management API built with Go's standard library. The service manages two resources -- users and tasks -- with conventions the team has established over time.\n\nFamiliarize yourself with the codebase. Read the existing code, run the tests, understand the patterns.\n\n```bash\ncd starter/\ngo build ./...\ngo test -race -count=1 ./...\n```\n\nThe codebase has specific conventions:\n\n- Structured logging with `slog` (JSON format, specific field names)\n- Error handling: `fmt.Errorf(\"operation: %w\", err)` wrapping pattern\n- HTTP responses: JSON envelope `{\"data\": ..., \"error\": ...}`\n- Test style: table-driven tests exclusively\n- Handler naming: `Handle<Resource><Action>` (e.g., `HandleUserCreate`)\n- Package layout: all domain logic in `internal/` packages\n\n**Your assignment**: Add a **projects** resource to the API. Projects have a name, description, owner (user ID), and status. Implement:\n\n- `POST /projects` -- create a project\n- `GET /projects/{id}` -- get a project by ID\n- `GET /projects` -- list all projects\n- `PUT /projects/{id}` -- update a project\n- `DELETE /projects/{id}` -- delete a project\n\nThe new code must follow every convention the existing code follows.",
+      "coach_context": "The student is reading the setup for STE-001. They are about to explore an existing Go HTTP service with established conventions. Help them orient to the codebase and understand what they need to build.",
+      "coach_goals": [
+        "Orient them to the starter code structure and conventions",
+        "Ask them to identify the conventions before they start coding",
+        "Do NOT mention CLAUDE.md or persistent context -- let them approach naturally"
+      ],
+      "suggested_questions": [
+        "Have you read through the existing code? What conventions did you notice?",
+        "How would you describe the task to your agent?",
+        "What patterns in the existing handlers, tests, and error handling stand out to you?"
+      ]
+    },
+    {
+      "id": "part1_work",
+      "label": "Part 1: The Natural Approach",
+      "content_md": "## Part 1: The Natural Approach\n\nOpen three separate agent sessions (or simulate three by starting fresh each time). In each session, ask the agent to implement the projects resource.\n\n**Session 1**: Start your agent in the `starter/` directory. Ask it to add the projects resource with CRUD operations. Do not provide any context beyond the task description. When the agent produces code, review it against the existing codebase. Note every deviation from conventions. Correct each one.\n\n**Session 2**: Start a fresh agent session. Same task, same codebase (reset to the original state first). Same approach. Review. Note deviations. Correct.\n\n**Session 3**: One more fresh session. Same task. Review and correct.\n\nAfter each session, record in your interaction log:\n1. What conventions did the agent get wrong?\n2. What corrections did you make?\n3. How long did each correction cycle take?",
+      "coach_context": "The student is about to run three separate agent sessions without any persistent context. This is the trap phase -- each session starts cold and the agent will make the same kinds of convention mistakes. Help them notice the pattern of repetition across sessions WITHOUT suggesting the solution.",
+      "coach_goals": [
+        "Ask what they told the agent in each session",
+        "After each session, ask what corrections they made",
+        "Help them notice when the SAME correction appears in multiple sessions",
+        "Do NOT suggest writing a CLAUDE.md or any persistent context mechanism"
+      ],
+      "suggested_questions": [
+        "What did you tell your agent for Session 1?",
+        "What conventions did the agent get wrong? Were any surprising?",
+        "Now that you're starting Session 2, do you expect the same mistakes?",
+        "Comparing Sessions 1 and 2, how much overlap was there in corrections?",
+        "In Session 3, could you predict the mistakes before you saw them?"
+      ]
+    },
+    {
+      "id": "part1_checkpoint",
+      "label": "Part 1: Checkpoint",
+      "content_md": "### Checkpoint\n\nBefore proceeding, answer honestly:\n\n- [ ] Did the agent make the same category of mistake across sessions?\n- [ ] Did you find yourself giving the same correction more than twice?\n- [ ] Could you predict what the agent would get wrong before it happened?\n- [ ] How much of your time was spent on corrections vs. new work?\n\nIf you corrected the same thing three times, you have found the trap.",
+      "coach_context": "The student has completed three sessions and is evaluating the pattern of repeated corrections. Help them see that the repetition is not the agent's fault -- it is a structural problem with ephemeral context. The agent literally cannot remember corrections from a previous session.",
+      "coach_goals": [
+        "Work through each checklist item systematically",
+        "Help them categorize their corrections (logging, error handling, naming, testing, etc.)",
+        "Ask them to count how many unique corrections vs. repeated corrections they made",
+        "Help them feel the cost of repetition without yet revealing the solution"
+      ],
+      "checklist": [
+        "Did the agent make the same category of mistake across sessions?",
+        "Did you find yourself giving the same correction more than twice?",
+        "Could you predict what the agent would get wrong before it happened?",
+        "How much of your time was spent on corrections vs. new work?"
+      ],
+      "suggested_questions": [
+        "How many corrections did you make across all three sessions?",
+        "How many of those were the SAME correction repeated in a different session?",
+        "If you could tell the agent something before it started, what would you say?",
+        "Why do you think the agent keeps making the same mistakes?"
+      ]
+    },
+    {
+      "id": "part2_work",
+      "label": "Part 2: The Effective Approach",
+      "content_md": "## Part 2: The Effective Approach\n\nReset the codebase to its original state.\n\nBefore starting a new agent session, create a `CLAUDE.md` file in the project root. This file is read by the agent at the start of every session. It is your persistent context -- the accumulated knowledge that prevents repeated mistakes.\n\nWrite your CLAUDE.md based on the corrections from Part 1. Every correction you repeated is an entry. Include:\n\n- The exact commands to build, test, and lint\n- The error handling pattern (with example)\n- The logging format (with example)\n- The response envelope structure\n- The test style requirement (table-driven)\n- The handler naming convention\n- The package layout rules\n- Anything the agent assumed incorrectly\n\nStart a fresh agent session with your CLAUDE.md in place. Give the same task. Compare the output.",
+      "coach_context": "The student is now writing a CLAUDE.md based on the corrections from Part 1. This is the correction phase. Help them think about what belongs in a CLAUDE.md -- every repeated correction is an entry. The CLAUDE.md should be concise, specific, and example-driven.",
+      "coach_goals": [
+        "Help them translate corrections into CLAUDE.md entries",
+        "Encourage specificity: show examples, not just rules",
+        "Ask about the difference between what the agent can infer from code vs. what needs to be explicit",
+        "Ask them to compare the agent's output with Part 1 after running with the CLAUDE.md"
+      ],
+      "suggested_questions": [
+        "Which corrections from Part 1 are you turning into CLAUDE.md entries?",
+        "For each entry, are you including a concrete example or just a rule?",
+        "Is there anything the agent should know that you DIDN'T have to correct -- but it might get wrong in the future?",
+        "How does the agent's output compare to Part 1 now that the CLAUDE.md is in place?"
+      ]
+    },
+    {
+      "id": "part2_checkpoint",
+      "label": "Part 2: Checkpoint",
+      "content_md": "### Checkpoint\n\n- [ ] How many corrections did you need to make this time?\n- [ ] Did the agent follow conventions from the first prompt?\n- [ ] How does time-to-working-code compare to Part 1's sessions?\n- [ ] Is the output consistent with the existing codebase?\n\nCompare your CLAUDE.md against `reference/CLAUDE.md`.",
+      "coach_context": "The student finished Part 2 and is comparing results with Part 1. Help them see the concrete difference the CLAUDE.md made -- fewer corrections, faster time to working code, and more consistent output.",
+      "coach_goals": [
+        "Compare correction counts between Part 1 sessions and Part 2",
+        "Ask about time-to-working-code difference",
+        "Help them see that the CLAUDE.md is a one-time investment with compounding returns",
+        "Ask them to compare their CLAUDE.md with the reference"
+      ],
+      "checklist": [
+        "How many corrections did you need to make this time?",
+        "Did the agent follow conventions from the first prompt?",
+        "How does time-to-working-code compare to Part 1's sessions?",
+        "Is the output consistent with the existing codebase?"
+      ],
+      "suggested_questions": [
+        "How many corrections in Part 2 vs. Part 1?",
+        "Did the agent follow conventions from the first prompt, or did you still need to correct?",
+        "How does your CLAUDE.md compare to the reference? What did you miss? What did you add?",
+        "If you ran a fourth session tomorrow with this CLAUDE.md, what would you expect?"
+      ]
+    },
+    {
+      "id": "reflection",
+      "label": "Reflection",
+      "content_md": "## The Principle\n\nThe instinct of an experienced engineer is to hold project conventions in their head and correct deviations as they appear. This works when you write the code yourself. It fails when you direct an agent, because:\n\n1. **The agent has no memory between sessions.** Every session starts from zero.\n2. **Your corrections are ephemeral.** They fix the current output but do not prevent the next session's mistakes.\n3. **The cost of repetition compounds.** Three sessions with five corrections each is fifteen interruptions a single document eliminates.\n\nA CLAUDE.md is not documentation. It is not a style guide. It is a **context injection point** -- the minimal set of information that transforms an agent from a generic code generator into one that fits your project. The effort to write it is paid once. The return is collected every session.\n\nThe METR study found experienced developers initially took 19% longer with agents. Repeated corrections without persistent context is a primary cause.\n\n> **Every correction you repeat is a CLAUDE.md entry you haven't written.**\n\n## Reflection\n\nRecord in your interaction log:\n\n1. **Mapping**: List the corrections from Session 1 alongside the CLAUDE.md entries that eliminated them. How close is the mapping?\n2. **Resistance**: Did you feel that writing the CLAUDE.md was \"extra work\"? Compare the time spent writing it against the cumulative correction time across three sessions.\n3. **Coverage**: What did your CLAUDE.md miss that the reference included? What did you include that the reference did not?\n4. **Transfer**: What are the first five CLAUDE.md entries you would write for your actual codebase at work?",
+      "coach_context": "The student has completed both parts and is reflecting. Help them articulate the lesson and connect it to the axiom. The key insight is that persistent context eliminates repeated corrections, and the time to write a CLAUDE.md is far less than the cumulative cost of corrections across sessions.",
+      "coach_goals": [
+        "Help them articulate what they learned in their own words",
+        "Connect their experience to the axiom about repeated corrections",
+        "Ask about transfer to their real work -- what CLAUDE.md entries would they write?",
+        "Highlight the compounding return: every future session benefits from the CLAUDE.md"
+      ],
+      "reflection_questions": [
+        "How many total corrections across Part 1 vs. Part 2?",
+        "How does the time to write the CLAUDE.md compare to the cumulative correction time?",
+        "What are the first five CLAUDE.md entries you would write for your actual codebase?",
+        "In your own words, why does persistent context matter for agent sessions?"
+      ],
+      "suggested_questions": [
+        "What's the one thing you'll do differently in your next agent session?",
+        "Did writing the CLAUDE.md feel like overhead, or like an investment? Why?",
+        "If a colleague said 'the agent should just figure it out from the code,' how would you respond?",
+        "How would you describe the axiom in your own words?"
+      ]
+    }
+  ]
+}
