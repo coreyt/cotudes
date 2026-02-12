@@ -96,6 +96,7 @@ must handle failure recovery by design.**
 | DME-008 | Performance at Scale | Output Evaluation | Agent queries that work on dev, fail at prod scale (3) | SQL |
 | DME-009 | The Access Pattern | Architecture for Agents | Data APIs agents can reason about (2) | SQL / API |
 | DME-010 | Data Governance | Specification Writing | Agent output respecting PII and retention policies (3) | SQL / Policy |
+| DME-011 | The Sample Set | Context Engineering | Agent guessing at data distribution (3) | SQL |
 
 **DME-008**: Agent-written SQL performs well against a dev database with 10K
 rows. In production with 10M rows, the same query takes 45 minutes because it
@@ -124,7 +125,7 @@ DME-000 (Setup)
     └── DME-002 (Output Evaluation)
     └── DME-003 (Output Evaluation)
             └── DME-004 through DME-007 (Fluency)
-                    └── DME-008 through DME-010 (Application)
+                    └── DME-008 through DME-011 (Application)
                             └── DME-011 (Capstone)
 ```
 

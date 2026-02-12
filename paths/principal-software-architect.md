@@ -73,6 +73,7 @@ should fit in an agent's context window and a human's working memory.**
 | PSA-008 | The Data Architecture | Architecture for Agents | Schema design agents can reason about (3) | SQL / Any |
 | PSA-009 | Compliance and Governance | Output Evaluation | Agent output meeting regulatory requirements (2) | Process + Code |
 | PSA-010 | The Migration Strategy | Task Decomposition | Large-scale migration planned for agent execution (2) | Architecture |
+| PSA-011 | The Compliance Compiler | Architecture for Agents | Prompting "ensure GDPR compliance" (4) | Architecture |
 
 ### Capstone (PSA-011)
 

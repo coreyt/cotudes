@@ -83,6 +83,7 @@ suggests exists before it enters your supply chain.**
 | DOE-008 | The Incident Response | Recovery Patterns | Using agents during incidents -- speed vs. risk (3) | Any |
 | DOE-009 | Platform Engineering | Architecture for Agents | Internal platforms agents can operate (2) | Any |
 | DOE-010 | Cost and Resource Management | Delegation Judgment | Agent-provisioned resources without cost awareness (3) | Cloud / IaC |
+| DOE-011 | The Secret Handshake | Output Evaluation | Agent hardcoding "test" secrets (5) | Vault / K8s |
 
 ### Capstone (DOE-011)
 
@@ -103,7 +104,7 @@ DOE-000 (Setup)
     └── DOE-002 (Output Evaluation)
     └── DOE-003 (Feedback Loop Design)
             └── DOE-004 through DOE-007 (Fluency)
-                    └── DOE-008 through DOE-010 (Application)
+                    └── DOE-008 through DOE-011 (Application)
                             └── DOE-011 (Capstone)
 ```
 

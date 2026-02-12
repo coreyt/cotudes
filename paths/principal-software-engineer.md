@@ -71,6 +71,7 @@ that evolve based on observed agent behavior. **Axiom: Agent guidelines are code
 | PSE-008 | Cross-Team Consistency | Context Engineering | Incompatible agent patterns across teams (2) | Process |
 | PSE-009 | The Skill Preservation | Delegation Judgment | Team skills atrophying from over-reliance (3) | Process |
 | PSE-010 | Security Surface Review | Output Evaluation | Agent-introduced vulnerabilities (3) | Any |
+| PSE-011 | The Onboarding Flow | Delegation Judgment | New hire drowning in agent-generated code (3) | Process |
 
 ### Capstone (PSE-011)
 

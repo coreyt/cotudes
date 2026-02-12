@@ -112,6 +112,7 @@ diagnose root causes.**
 | ASE-012 | The Refactor | Task Decomposition | Refactoring without incremental verification (3) | TypeScript |
 | ASE-013 | Edge Cases | Output Evaluation | Agent code missing boundary conditions (3) | TypeScript |
 | ASE-014 | The Integration | Task Decomposition | Integrating agent code into existing systems (3) | TypeScript |
+| ASE-015 | The Stack Trace | Feedback Loop Design | Pasting error text without reading it (4) | TypeScript |
 
 ### Capstone (ASE-015)
 
@@ -135,7 +136,7 @@ ASE-000 (Setup)
             └── ASE-005 (Context Engineering)
             └── ASE-006 (Delegation Judgment)
             └── ASE-007 (Recovery Patterns)
-                    └── ASE-008 through ASE-014 (Application)
+                    └── ASE-008 through ASE-015 (Application)
                             └── ASE-015 (Capstone)
 ```
 

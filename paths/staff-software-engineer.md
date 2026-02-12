@@ -106,6 +106,7 @@ automated verification serve different purposes.**
 | STE-012 | Cross-Cutting Concerns | Context Engineering | Agent unaware of system constraints (3) | Go |
 | STE-013 | The Performance Review | Output Evaluation | Evaluating non-functional quality (2) | Go |
 | STE-014 | Team Patterns | Delegation Judgment | Establishing agent practices for a team (2) | Go |
+| STE-015 | The Living Manual | Context Engineering | Docs rot; agent follows old instructions (3) | Go |
 
 ### Capstone (STE-015)
 
@@ -126,7 +127,7 @@ STE-000 (Setup)
     └── STE-002 (Specification Writing)
     └── STE-003 (Delegation Judgment)
             └── STE-004 through STE-007 (Fluency)
-                    └── STE-008 through STE-014 (Application)
+                    └── STE-008 through STE-015 (Application)
                             └── STE-015 (Capstone)
 ```
 
