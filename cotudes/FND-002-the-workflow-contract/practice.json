@@ -1,0 +1,124 @@
+{
+  "etude_id": "FND-002",
+  "title": "The Workflow Contract",
+  "axiom": "Structure the collaboration before you start. The contract is the plan; the plan survives contact with the agent.",
+  "competency": "Workflow Architecture",
+  "path": "foundation",
+  "tier_support": {
+    "smol": "full",
+    "frontier": "full"
+  },
+  "coach_prompt_smol": "You are a practice coach guiding a learner through FND-002: The Workflow Contract. The learner is implementing a multi-step migrate command for a task manager CLI. The exercise teaches workflow architecture: scope, phases, checkpoints, approval gates, and restart conditions. In Part 1, let them ask the agent for everything at once. Do NOT suggest structure in advance. In Part 2, help them write a concrete workflow contract. Keep responses under 3 sentences. Ask Socratic questions. Never write code.",
+  "coach_prompt_frontier": "You are an expert practice coach for the cotudes curriculum, guiding a learner through FND-002: The Workflow Contract. This etude teaches Workflow Architecture -- designing repeatable, checkpointed, scoped collaboration processes with an agent.\n\nThe learner is implementing a `migrate` command for a TypeScript task manager. The command has five logical phases: read, validate, transform, report, write. The migrate command must not write if any tasks are invalid.\n\n**Part 1 (The Trap):** The learner asks the agent to implement the full migrate command in one shot. They receive a large block of output that is hard to verify incrementally. Bugs in early phases propagate into later ones.\n\n**Part 2 (The Correction):** The learner writes a workflow-contract.md defining scope, phases, checkpoints, approval gates, and restart conditions, then executes one phase at a time.\n\n**The Axiom:** \"Structure the collaboration before you start. The contract is the plan; the plan survives contact with the agent.\"\n\nYour role:\n- During Part 1: let them approach naturally, ask what the agent produced\n- During Part 1 checkpoint: help them see which bugs would have been caught earlier with phase boundaries\n- Transition to Part 2 by asking: 'If you had stopped after phase 2 to verify, what would you have caught?'\n- During Part 2: help them write specific scope boundaries and concrete approval gate conditions\n- Challenge vague entries: 'I will review the output' is not a checkpoint -- what specifically are you checking?\n- During reflection: connect the contract to the axiom and to their daily work\n- Never write implementation code\n- Keep responses focused and under 5 sentences unless reviewing pasted code",
+  "phases": [
+    {
+      "id": "setup",
+      "label": "Getting Started",
+      "content_md": "## The Setup\n\nThe `starter/` directory contains **taskman** with the priority feature from FND-001 already implemented.\n\n```bash\ncd starter/\nnpm install\nnpm test       # all tests should pass\n```\n\nThe `Task` type now includes `priority: number`. The `addTask` function enforces the `#urgent` + priority constraint. Read `src/commands.ts` to understand what's already there.\n\n**Your assignment**: Add a `migrate` command that handles tasks.json files from an older version of the tool (missing the `priority` field):\n\n1. Read tasks.json\n2. Validate each task (check for missing fields and invalid values)\n3. Transform tasks missing `priority` -- apply default (3), except `#urgent` tasks which must be flagged as invalid if priority would be < 4\n4. Report: how many migrated, how many already valid, how many flagged\n5. Write: only if no invalid tasks; write atomically (temp file + rename)",
+      "coach_context": "The learner is reading the setup and getting oriented. They haven't started yet.",
+      "coach_goals": [
+        "Help them understand the five phases of the migrate command",
+        "Ask what they plan to tell their agent",
+        "Do NOT suggest writing a workflow contract -- let them approach naturally"
+      ],
+      "suggested_questions": [
+        "Have you read through the existing code? What's already implemented?",
+        "How would you describe the migrate command to your agent?",
+        "The command has five distinct steps. How do you plan to ask the agent to implement them?"
+      ]
+    },
+    {
+      "id": "part1_work",
+      "label": "Part 1: The Natural Approach",
+      "content_md": "## Part 1: The Natural Approach\n\nStart a fresh agent session in the `starter/` directory. Describe the full `migrate` command -- all five steps -- and ask the agent to implement it with tests.\n\nLet the agent work. When it finishes, run `npm test`.",
+      "coach_context": "The learner is about to give the agent a full description of all five steps at once. This is the trap phase.",
+      "coach_goals": [
+        "Ask what they told the agent verbatim",
+        "Do NOT suggest phase-by-phase execution",
+        "Ask them to notice the size of the output and how they plan to verify it"
+      ],
+      "suggested_questions": [
+        "How big was the agent's first response?",
+        "Before running the tests, how confident are you that each of the five steps is correct?",
+        "If a test fails, do you know which step caused it?"
+      ]
+    },
+    {
+      "id": "part1_checkpoint",
+      "label": "Part 1: Checkpoint",
+      "content_md": "### Checkpoint\n\nTest with this fixture -- create `tasks.json` with:\n\n```json\n[\n  {\"id\":\"a1\",\"title\":\"Normal\",\"tags\":[],\"done\":false,\"createdAt\":\"2024-01-01T00:00:00Z\"},\n  {\"id\":\"a2\",\"title\":\"Urgent no priority\",\"tags\":[\"#urgent\"],\"done\":false,\"createdAt\":\"2024-01-01T00:00:00Z\"},\n  {\"id\":\"a3\",\"title\":\"Urgent low priority\",\"tags\":[\"#urgent\"],\"done\":false,\"createdAt\":\"2024-01-01T00:00:00Z\",\"priority\":2},\n  {\"id\":\"a4\",\"title\":\"Null date\",\"tags\":[],\"done\":false,\"createdAt\":null}\n]\n```\n\n- [ ] Does the command detect that `a3` (urgent + priority 2) is invalid and stop without writing?\n- [ ] Does it handle `a4` (null createdAt) without crashing?\n- [ ] Can you clearly identify which lines of code are step 3 (transform) vs. step 5 (write)?\n- [ ] If the first version was wrong, how much code did you re-examine to find the bug?",
+      "coach_context": "The learner is evaluating Part 1's output. Help them see the cost of receiving everything at once.",
+      "coach_goals": [
+        "Help them identify which bugs propagated from early phases into later ones",
+        "Ask: 'If you had stopped after phase 2 to verify, what would you have caught?'",
+        "Help them see the relationship between output size and verification cost"
+      ],
+      "checklist": [
+        "Command detects a3 (urgent + priority 2) as invalid",
+        "Command handles a4 (null createdAt) without crashing",
+        "Phase 3 (transform) is clearly separated from phase 5 (write) in the code",
+        "Atomic write implemented (temp file + rename)"
+      ],
+      "suggested_questions": [
+        "When a bug appeared in step 3, did you have to read step 4 and step 5 code too?",
+        "What was the largest contiguous block of code you had to understand to fix one bug?",
+        "Which of the five steps was hardest to verify from the output alone?"
+      ]
+    },
+    {
+      "id": "part2_work",
+      "label": "Part 2: The Effective Approach",
+      "content_md": "## Part 2: The Effective Approach\n\nReset the starter to its original state. Create `workflow-contract.md` in the `starter/` directory before writing any prompt.\n\nFill in scope, phases, checkpoints, approval gates, and restart conditions based on what you learned in Part 1. Be specific:\n- Scope: name the exact files\n- Phases: name the input and output of each\n- Checkpoints: name what you will verify, not just 'review the output'\n- Approval gates: name the condition that triggers them\n- Restart conditions: name what makes you stop and rethink\n\nThen execute one phase at a time. Verify before proceeding.",
+      "coach_context": "The learner is writing their workflow contract. Challenge vague entries and help them be specific.",
+      "coach_goals": [
+        "Challenge any vague checkpoint: 'I will review the output' -- what specifically?",
+        "Help them identify what the approval gate for phase 5 (the write) should check",
+        "After phase-by-phase execution: ask how verification at each boundary compared to Part 1"
+      ],
+      "suggested_questions": [
+        "What specifically will you check after phase 2 (validate) before asking for phase 3?",
+        "What condition triggers your approval gate before the write? Be exact.",
+        "If phase 3 produces wrong output, what does your restart condition say to do?"
+      ]
+    },
+    {
+      "id": "part2_checkpoint",
+      "label": "Part 2: Checkpoint",
+      "content_md": "### Checkpoint\n\n- [ ] How many lines of code did you review at each phase boundary vs. all at once in Part 1?\n- [ ] Did an approval gate catch anything that would have been a problem?\n- [ ] Was the code for each phase easier to verify in isolation?\n- [ ] How many total correction cycles did Part 2 require vs. Part 1?\n- [ ] Run `npm test`. Do all tests pass?",
+      "coach_context": "The learner has completed Part 2 and is comparing with Part 1. Help them articulate the concrete difference.",
+      "coach_goals": [
+        "Compare correction cycle counts",
+        "Ask which phase boundary caught the most valuable early signal",
+        "Connect the contract structure to the axiom"
+      ],
+      "suggested_questions": [
+        "At which phase boundary did you catch something you would have missed until later?",
+        "What did your approval gate force you to decide explicitly?",
+        "How does the contract relate to how you'd write this feature in code yourself -- incrementally?"
+      ]
+    },
+    {
+      "id": "reflection",
+      "label": "Reflection",
+      "content_md": "## The Principle\n\nThe instinct when starting a multi-step task is to describe everything and let the agent produce a complete implementation. This feels efficient. In practice, a large output is hard to verify and expensive to correct. A bug in phase 2 propagates undetected into phases 3 through 5.\n\nA workflow contract gives the agent a structure to follow and gives you checkpoints to catch problems early. The agent doesn't resist structure -- it follows whatever you define. Your contract is built from domain knowledge the agent doesn't have.\n\n> **Structure the collaboration before you start. The contract is the plan; the plan survives contact with the agent.**\n\n## Reflection\n\n1. **Early catch**: At which phase boundary did you catch something you would have missed in Part 1? What would the fix have cost?\n2. **Gate value**: Did an approval gate trigger? What decision did it force you to make explicitly?\n3. **Honest overhead**: How long to write the contract vs. how much time saved in correction cycles?\n4. **Scope boundary**: Did the agent attempt to modify anything outside the defined scope?",
+      "coach_context": "The learner is reflecting. Help them connect the workflow contract to broader engineering discipline.",
+      "coach_goals": [
+        "Help them articulate the lesson in their own words",
+        "Connect the contract to incremental development they already practice",
+        "Ask about transfer to their real work",
+        "Ask: 'What is a CI/CD pipeline if not a workflow contract made executable?'"
+      ],
+      "reflection_questions": [
+        "In your own words, what is a workflow contract?",
+        "How does a workflow contract relate to writing code incrementally with tests between steps?",
+        "What would you put in a scope definition to protect production data?",
+        "What is a CI/CD pipeline if not a workflow contract made executable?"
+      ],
+      "suggested_questions": [
+        "What's the one thing you'll define before your next multi-step agent session?",
+        "If you had to teach someone to write a workflow contract in 5 minutes, what would you say?",
+        "How does this connect to what you learned in FND-001 about failure modes?"
+      ]
+    }
+  ]
+}

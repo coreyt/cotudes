@@ -67,6 +67,133 @@ experience level, daily responsibilities, and unique challenges.
 | [DOE](paths/staff-devops-engineer.md) | Staff DevOps / CI/CD Engineer | 12 | Infrastructure: pipelines, IaC, security scanning |
 | [DME](paths/staff-data-management-engineer.md) | Staff Data Management Engineer | 12 | Data: schemas, migrations, pipelines, quality |
 
+### Curriculum Status
+
+```
+cotudes
+│
+│  Legend: ✓ complete  ~ stubbed (README only)  · planned
+│
+├── FND  Common Foundation
+│   ├── ✓ FND-001  The Failure Map           (LLM Failure Mode Reasoning)
+│   └── ✓ FND-002  The Workflow Contract     (Workflow Architecture)
+│
+├── ASE  Associate Software Engineer
+│   ├── setup
+│   │   └── ✓ ASE-000  Setup
+│   ├── Foundation
+│   │   ├── ✓ ASE-001  The Vague Request
+│   │   ├── · ASE-002  Reading Before Writing
+│   │   └── · ASE-003  The Test First
+│   ├── Fluency
+│   │   ├── · ASE-004  One Bite at a Time
+│   │   ├── · ASE-005  The Missing Context
+│   │   ├── · ASE-006  Know What You Don't Know
+│   │   └── · ASE-007  The Debug Loop
+│   ├── Application
+│   │   ├── · ASE-008  The Specification
+│   │   ├── · ASE-009  Type Safety Net
+│   │   ├── · ASE-010  The Code Review
+│   │   ├── · ASE-011  Building on Foundation
+│   │   ├── · ASE-012  The Refactor
+│   │   ├── · ASE-013  Edge Cases
+│   │   └── · ASE-014  The Integration
+│   └── Capstone
+│       └── · ASE-015  Feature Build
+│
+├── STE  Staff Software Engineer
+│   ├── Foundation
+│   │   ├── ✓ STE-001  The CLAUDE.md
+│   │   ├── ~ STE-002  Spec-Driven Development
+│   │   └── ~ STE-003  The Delegation Matrix
+│   ├── Fluency
+│   │   ├── ~ STE-004  Context Window Economics
+│   │   ├── ~ STE-005  The Parallel Sprint
+│   │   ├── · STE-006  Agent-Friendly Architecture
+│   │   └── · STE-007  The Review Protocol
+│   ├── Application
+│   │   ├── · STE-008  Recovery and Restart
+│   │   ├── · STE-009  The Feedback Machine
+│   │   ├── · STE-010  Session Continuity
+│   │   ├── · STE-011  The Migration
+│   │   ├── · STE-012  Cross-Cutting Concerns
+│   │   ├── · STE-013  The Performance Review
+│   │   └── · STE-014  Team Patterns
+│   └── Capstone
+│       └── ~ STE-015  System Feature
+│
+├── PSE  Principal Software Engineer
+│   ├── Foundation
+│   │   ├── ✓ PSE-001  The Architecture Review
+│   │   ├── · PSE-002  Technical Debt Triage
+│   │   └── · PSE-003  The Standards Document
+│   ├── Fluency
+│   │   ├── · PSE-004  Measuring Agent ROI
+│   │   ├── · PSE-005  The Legacy System
+│   │   ├── · PSE-006  Design Review Protocol
+│   │   └── · PSE-007  Prototype vs. Production
+│   ├── Application
+│   │   ├── · PSE-008  Cross-Team Consistency
+│   │   ├── · PSE-009  The Skill Preservation
+│   │   └── · PSE-010  Security Surface Review
+│   └── Capstone
+│       └── · PSE-011  Org-Wide Practice
+│
+├── PSA  Principal Software Architect
+│   ├── Foundation
+│   │   ├── ✓ PSA-001  Agent-Friendly System Design
+│   │   ├── ~ PSA-002  The Specification as Contract
+│   │   └── ~ PSA-003  Modular Boundaries
+│   ├── Fluency
+│   │   ├── ~ PSA-004  The Evolutionary Architecture
+│   │   ├── ~ PSA-005  Documentation as Code
+│   │   ├── · PSA-006  The Platform Decision
+│   │   └── · PSA-007  Observability Design
+│   ├── Application
+│   │   ├── · PSA-008  The Data Architecture
+│   │   ├── · PSA-009  Compliance and Governance
+│   │   └── · PSA-010  The Migration Strategy
+│   └── Capstone
+│       └── ~ PSA-011  System Redesign
+│
+├── DOE  Staff DevOps/CI-CD Engineer
+│   ├── Foundation
+│   │   ├── ✓ DOE-001  The CI Feedback Loop
+│   │   ├── ~ DOE-002  IaC with Agents
+│   │   └── ~ DOE-003  Pipeline as Agent Guardrail
+│   ├── Fluency
+│   │   ├── ~ DOE-004  The Dockerfile
+│   │   ├── ~ DOE-005  Security Scanning
+│   │   ├── · DOE-006  The Deployment Strategy
+│   │   └── · DOE-007  Monitoring and Alerting
+│   ├── Application
+│   │   ├── · DOE-008  The Incident Response
+│   │   ├── · DOE-009  Platform Engineering
+│   │   └── · DOE-010  Cost and Resource Management
+│   └── Capstone
+│       └── ~ DOE-011  Pipeline Overhaul
+│
+└── DME  Staff Data Management Engineer
+    ├── Foundation
+    │   ├── ✓ DME-001  The Schema Design
+    │   ├── · DME-002  Migration Safety
+    │   └── · DME-003  The Query Review
+    ├── Fluency
+    │   ├── · DME-004  Pipeline Specification
+    │   ├── · DME-005  Data Quality Gates
+    │   ├── · DME-006  The Context Problem
+    │   └── · DME-007  Idempotency and Recovery
+    ├── Application
+    │   ├── · DME-008  Performance at Scale
+    │   ├── · DME-009  The Access Pattern
+    │   ├── · DME-010  Data Governance
+    │   └── · DME-011  The Sample Set
+    └── Capstone
+        └── · DME-011  Data Platform
+```
+
+9 complete · 15 stubbed · 55 planned · 79 total (2 FND + 77 role-path)
+
 ### Where to Start
 
 - **New to agents?** Start with [ASE-000](cotudes/ASE-000-setup/README.md) (Environment Setup)

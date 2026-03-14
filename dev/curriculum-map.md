@@ -295,6 +295,151 @@ None required. Each path is self-contained. However, recommended cross-training:
 - Architects should complete STE-006 (Agent-Friendly Architecture) from the
   Staff path
 
+## Cross-Path Lesson Sharing
+
+Several lessons across different paths teach the same core skill, differing only in
+context or framing. Rather than authoring each independently, these can be structured
+as a **shared exercise with role-specific lenses** -- one canonical scenario, one
+`practice.json`, one `verify.sh`, with a brief framing note for each adopting path.
+
+A shared lesson still appears in each path's sequence as its own entry. The work
+reduction is in authoring and maintenance, not in the learner's experience.
+
+### Cluster 1: CI as Agent Feedback (DOE-001, DOE-003, STE-009)
+
+| Lesson | Path | Core Lesson |
+|--------|------|-------------|
+| DOE-001 The CI Feedback Loop | DOE | Make CI output actionable |
+| DOE-003 Pipeline as Agent Guardrail | DOE | Design CI stages to catch agent mistakes |
+| STE-009 The Feedback Machine | STE | Use CI as the agent's iteration loop |
+
+**Recommendation**: DOE-001 is complete. DOE-003 and STE-009 extend the same scenario.
+Author as a single three-part exercise: Part 1 = actionable output (DOE-001, done),
+Part 2 = guardrail stage design (DOE-003), Part 3 = CI-as-iteration-loop (STE-009).
+All three share one codebase and one CI config. Each path's entry points to the
+relevant part.
+
+### Cluster 2: Agent-Friendly Architecture (STE-006, PSA-001, PSA-003)
+
+| Lesson | Path | Core Lesson |
+|--------|------|-------------|
+| STE-006 Agent-Friendly Architecture | STE | Avoid clever abstractions agents can't navigate |
+| PSA-001 Agent-Friendly System Design | PSA | Eliminate implicit knowledge agents can't discover |
+| PSA-003 Modular Boundaries | PSA | Design module boundaries sized for agent work units |
+
+**Recommendation**: PSA-001 is complete. STE-006 and PSA-003 address facets of the same
+system design question. The cross-path prerequisite note already points STE to PSA-001;
+formalize this by making STE-006 a lens on PSA-001 (tactical code-level patterns) and
+PSA-003 a lens on PSA-001 (structural decomposition). One shared codebase scenario.
+
+### Cluster 3: Context Calibration (ASE-005, STE-004)
+
+| Lesson | Path | Core Lesson |
+|--------|------|-------------|
+| ASE-005 The Missing Context | ASE | Agent hallucinates because it lacks project context |
+| STE-004 Context Window Economics | STE | Agent loses signal because context is overloaded |
+
+**Recommendation**: These are the two sides of the same failure mode -- starvation vs.
+overload. Author as one shared scenario where learners encounter both failure modes in
+sequence: first under-context (the ASE trap), then over-context (the STE trap). The
+contrast makes both lessons sharper. One `practice.json`, two path entries.
+
+### Cluster 4: Delegation Judgment (ASE-006, STE-003)
+
+| Lesson | Path | Core Lesson |
+|--------|------|-------------|
+| ASE-006 Know What You Don't Know | ASE | Don't delegate what you can't evaluate |
+| STE-003 The Delegation Matrix | STE | A framework for deciding what to delegate |
+
+**Recommendation**: ASE-006 introduces the problem; STE-003 formalizes the solution.
+The "delegation matrix" artifact produced in STE-003 is directly the answer to the
+ASE-006 trap. Author STE-003 with the matrix as a reusable artifact, then ASE-006
+can reference it in its resolution phase. Shared artifact, independent scenarios.
+
+### Cluster 5: Recovery Patterns (ASE-007, STE-008)
+
+| Lesson | Path | Core Lesson |
+|--------|------|-------------|
+| ASE-007 The Debug Loop | ASE | Break out of agent error loops |
+| STE-008 Recovery and Restart | STE | Recognize and abandon failing agent threads |
+
+**Recommendation**: Same root behavior (the agent is stuck) at different scales.
+ASE-007 is a single file/function loop; STE-008 is a multi-hour architectural dead
+end. Author as a shared "agent failure recognition" heuristic document that both
+exercises reference. The scenarios differ but the decision framework is identical.
+
+### Cluster 6: Large-Scale Migration (STE-011, PSA-010)
+
+| Lesson | Path | Core Lesson |
+|--------|------|-------------|
+| STE-011 The Migration | STE | Tactical execution of a large migration with agents |
+| PSA-010 The Migration Strategy | PSA | Architectural planning for agent-executed migration |
+
+**Recommendation**: Use the same migration scenario. PSA-010 is the planning exercise
+(produce the migration spec, decompose the work, define the verification gates).
+STE-011 is the execution exercise (run the migration using that spec). If a learner
+does both paths, they author the plan in PSA-010 and execute it in STE-011 -- a
+uniquely coherent learning arc. If they do only one, each stands alone.
+
+### Cluster 7: Security Evaluation (DOE-005, PSE-010)
+
+| Lesson | Path | Core Lesson |
+|--------|------|-------------|
+| DOE-005 Security Scanning | DOE | Hallucinated dependencies and supply-chain risk |
+| PSE-010 Security Surface Review | PSE | Agent-introduced code-level vulnerabilities |
+
+**Recommendation**: Share a security review checklist artifact. DOE-005 covers the
+dependency/supply-chain surface; PSE-010 covers the code-level surface. Both paths
+produce the same artifact (an annotated security review), applied to different scope.
+One checklist template to maintain.
+
+### Cluster 8: Specification Writing Progression (ASE-001, ASE-008, STE-002, DME-001, DME-004, PSA-002)
+
+| Lesson | Path | Core Lesson |
+|--------|------|-------------|
+| ASE-001 The Vague Request | ASE | Write a spec before prompting |
+| ASE-008 The Specification | ASE | Convert requirements to a structured spec |
+| STE-002 Spec-Driven Development | STE | Spec first, always, for complex work |
+| DME-001 The Schema Design | DME | Domain constraints belong in the spec, not discovered later |
+| DME-004 Pipeline Specification | DME | Vague ETL specs produce fragile pipelines |
+| PSA-002 The Specification as Contract | PSA | Specs as machine-consumable contracts |
+
+**Recommendation**: These are not shareable as single exercises (they're domain-specific),
+but they should share a **canonical spec template** artifact. Author a structured spec
+format in ASE-001 (already complete); all subsequent spec lessons use and extend the
+same template. The progression is: write a spec (ASE-001) → write a domain spec (ASE-008,
+DME-001) → write a team spec (STE-002) → write a system contract (PSA-002). One template,
+six etudes, compounding familiarity.
+
+### Cluster 9: Setup (ASE-000, STE-000, PSE-000, PSA-000, DOE-000, DME-000)
+
+All six paths begin with an environment setup etude. These share:
+- Installing Claude Code and configuring API keys
+- Setting up the path-specific toolchain
+- Verifying the environment with a trivial first interaction
+
+**Recommendation**: Author a shared setup core that covers the common first two steps.
+Each path's `000` etude is then: (shared core) + (path-specific toolchain setup). One
+setup script to maintain for the common parts.
+
+### Summary: Authoring Reduction
+
+By applying the sharing strategy above, the 65 total planned etudes reduce to roughly
+**50 unique authoring efforts** -- the 15-etude reduction comes from shared scenarios,
+shared artifacts, and shared setup infrastructure, not from removing content.
+
+| Cluster | Etudes Affected | Authoring Reduction |
+|---------|----------------|---------------------|
+| CI Feedback | DOE-001, DOE-003, STE-009 | 3 → 1 scenario (parts) |
+| Agent-Friendly Architecture | STE-006, PSA-001, PSA-003 | 3 → 1 codebase |
+| Context Calibration | ASE-005, STE-004 | 2 → 1 scenario |
+| Delegation Judgment | ASE-006, STE-003 | shared artifact |
+| Recovery Patterns | ASE-007, STE-008 | shared framework doc |
+| Migration | STE-011, PSA-010 | 2 → 1 scenario (phases) |
+| Security | DOE-005, PSE-010 | shared checklist |
+| Spec Template | 6 etudes | shared template artifact |
+| Setup | 6 x -000 | shared core script |
+
 ## Assessment Model
 
 Each etude produces two artifacts:

@@ -64,12 +64,12 @@ The curriculum should therefore become **two-dimensional**:
 
 ## Proposed Curriculum Shape
 
-The curriculum should be reorganized into four layers:
+The curriculum is organized into three layers (the original Layer 2 — Agent
+Systems Foundation — has been retired; see that section for disposition):
 
-1. **Common Foundation**
-2. **Agent Systems Foundation**
-3. **Role-Specific Paths**
-4. **Role Capstones**
+1. **Common Foundation** (FND-001, FND-002)
+2. **Role-Specific Paths** (existing etudes + sharing clusters)
+3. **Role Capstones** (standardized four-output evidence model)
 
 ## Layer 1: Common Foundation
 
@@ -124,73 +124,22 @@ Outcome:
 
 ## Layer 2: Agent Systems Foundation
 
-This layer is still shared across all roles. It introduces the workflow model
-the rest of the repository should assume.
+> **Retired.** The AGT layer has been superseded by the cross-path sharing
+> strategy documented in `dev/curriculum-map.md` (see "Cross-Path Lesson
+> Sharing"). Each AGT concept is addressed by existing or planned etudes that
+> are shared across paths rather than authored as a separate pre-role sequence.
+> Authoring a parallel AGT layer would create redundancy, not depth.
 
-### AGT-001: The Agentic Loop in Practice
+### Disposition of AGT concepts
 
-Focus:
-- deliberate use of plan-act-verify cycles
-- surfacing assumptions before execution
-- explicit verification gates
-- handling failure, loops, and dead ends
-
-Working example:
-- Block Workflow + Goose as the reference environment
-
-### AGT-002: Agentic Tool Use
-
-Focus:
-- tools as bounded capabilities, not magical extensions of the model
-- filesystem, tests, lint, search, networked APIs, and environment inspection
-- selecting tools based on verifiability and blast radius
-
-Outcome:
-- learner distinguishes "ask the model" from "execute via tool and verify"
-
-### AGT-003: Good Practices Workflow
-
-Focus:
-- spec before implementation
-- tests and checks as guardrails
-- code review of agent output
-- small batches, checkpoints, rollback discipline, explicit acceptance criteria
-
-Working example:
-- Block Workflow + Goose demonstrating harness + agent + checks + restart
-
-### AGT-004: Building Small Applications with Agents
-
-Focus:
-- shipping a simple but real application with agent assistance
-- using agents for scaffolding, review, tests, refactors, and docs
-- separating architecture decisions from code generation
-
-Outcome:
-- learner experiences end-to-end delivery, not just isolated prompting
-
-### AGT-005: MCP Concepts and Boundaries
-
-Focus:
-- what MCP is
-- why tool schemas, permissions, and discoverability matter
-- when to use MCP vs native tools vs bespoke harness integrations
-- risks around capability sprawl and trust boundaries
-
-Outcome:
-- learner can reason about MCP as interface and protocol, not as a buzzword
-
-### AGT-006: Harness + Agent + Workflow
-
-Focus:
-- what a harness is
-- why harnesses matter for reproducibility, tool routing, auditability, and
-  policy enforcement
-- compare direct chat use vs harnessed execution
-- use Block Workflow + Goose as the default concrete example
-
-Outcome:
-- learner understands how teams operationalize agent use beyond ad hoc sessions
+| AGT etude | Concept | Addressed by |
+|-----------|---------|-------------|
+| AGT-001 The Agentic Loop in Practice | plan-act-verify cycles, handling failure and dead ends | ASE-007 The Debug Loop + STE-008 Recovery and Restart (Cluster 5, shared framework doc) |
+| AGT-002 Agentic Tool Use | tools as bounded capabilities, verifiability and blast radius | ASE-006 Know What You Don't Know + STE-003 The Delegation Matrix (Cluster 4, shared delegation matrix) |
+| AGT-003 Good Practices Workflow | spec first, tests as guardrails, checkpoints | ASE-001, ASE-003, STE-002 (Spec Writing cluster; shared spec template artifact) |
+| AGT-004 Building Small Applications | end-to-end delivery with agent assistance | Existing role capstones (ASE-015, STE-015, etc.) |
+| AGT-005 MCP Concepts and Boundaries | tool schemas, permissions, capability boundaries | MCP is a protocol, not a competency. Delegation Judgment and Workflow Architecture (FND-002) cover the underlying concepts. Appears as technology context inside relevant existing etudes. |
+| AGT-006 Harness + Agent + Workflow | harness patterns, reproducibility, audit | DOE-001/DOE-003/STE-009 (Cluster 1, three-part CI scenario) + FND-002 The Workflow Contract |
 
 ## How This Integrates With the Existing Curriculum
 
@@ -227,8 +176,11 @@ For each existing path:
 
 ## Role Extensions
 
-Not every role needs the same depth in every topic, but every role should see
-the same base sequence.
+Role extensions add depth to the shared foundation within existing path etudes.
+These are not separate pre-role sequences; they are the Application-tier and
+role-specific etudes that the cross-path sharing strategy preserves or
+introduces. See `dev/curriculum-map.md` "Cross-Path Lesson Sharing" for the
+canonical sharing implementation.
 
 ### Associate Software Engineer
 
@@ -238,11 +190,9 @@ Keep emphasis on:
 - review of agent output
 - understanding before delegating
 
-Extend with:
-- a basic agentic loop etude
-- a small app-building etude
-- introductory MCP concepts
-- harness familiarity, but not deep harness authoring
+Extend with (Application tier, planned):
+- failure mode recognition — addressed by shared ASE-007/STE-008 recovery framework
+- capstone as first end-to-end delivery experience (ASE-015)
 
 ### Staff Software Engineer
 
@@ -252,11 +202,10 @@ Keep emphasis on:
 - architecture for agent-friendly systems
 - parallel execution and review
 
-Extend with:
-- deeper agentic workflow design
-- tool selection and workflow composition
-- app-building with multiple coordinated agent tasks
-- harness usage as a team productivity system
+Extend with (Application tier, planned):
+- workflow architecture — addressed by FND-002 The Workflow Contract (Competency 12)
+- tool selection and scope — addressed by shared STE-003 delegation matrix
+- multi-session delivery — STE-010 Session Continuity + STE-015 capstone
 
 ### Principal Software Engineer
 
@@ -266,11 +215,10 @@ Keep emphasis on:
 - organizational delegation judgment
 - security and maintainability
 
-Extend with:
-- agent operating model design for teams
-- provider/backend systems mental model for tradeoff analysis
-- harness governance and rollout patterns
-- deciding where MCP and tool surfaces belong in the org
+Extend with (Application tier, planned):
+- workflow governance for teams — FND-002 + PSE-008 Cross-Team Consistency
+- tool surface decisions — Delegation Judgment (PSE-006 Design Review Protocol)
+- security review as a systematic practice — PSE-010 + shared DOE-005 checklist
 
 ### Principal Software Architect
 
@@ -279,11 +227,10 @@ Keep emphasis on:
 - specifications as executable contracts
 - architecture for agent-friendly development
 
-Extend with:
-- systems design for agent-operated applications
-- tool and interface boundaries
-- harness-aware platform design
-- MCP and capability design at the architecture level
+Extend with (Application tier, planned):
+- workflow-aware platform design — FND-002 + PSA-007 Observability Design
+- capability boundary design — Delegation Judgment at architecture scale (PSA-006)
+- agent-operated application design — PSA-008 The Data Architecture + PSA-009
 
 ### Staff DevOps / CI/CD Engineer
 
@@ -293,11 +240,10 @@ Keep emphasis on:
 - security review
 - infra review of agent output
 
-Extend with:
-- harness operations
-- policy enforcement for agent tools
-- MCP integration patterns in controlled environments
-- observability for agentic workflows
+Extend with (Application tier, planned):
+- workflow operations and policy enforcement — FND-002 + DOE-009 Platform Engineering
+- observability for agentic workflows — DOE-007 Monitoring and Alerting
+- incident response discipline — DOE-008 (Recovery Patterns at infrastructure scale)
 
 ### Staff Data Management Engineer
 
@@ -307,11 +253,10 @@ Keep emphasis on:
 - data quality gates
 - context around lineage and governance
 
-Extend with:
-- agentic tool use for schema/query/pipeline workflows
-- harnessed execution for repeatable data tasks
-- MCP concepts for governed data access
-- app-building where data correctness is the central constraint
+Extend with (Application tier, planned):
+- workflow architecture for repeatable data tasks — FND-002 + DME-007 Idempotency
+- governed data access patterns — Delegation Judgment (DME-009 The Access Pattern)
+- correctness as the capstone constraint — DME-011 Data Platform capstone
 
 ## Shared Systems Design Requirement
 
@@ -376,45 +321,57 @@ Update:
 Goal:
 - make the common foundation explicit without rewriting every path immediately
 
-### Phase 2: Add new shared-foundation etudes
+### Phase 2: Add two new shared-foundation etudes
 
-Introduce new etudes for:
-- coding-agent usage
-- LLM mental model
-- agentic loop
-- tool use
-- small app-building
-- MCP concepts
-- harness workflow
+Author the two etudes that address genuinely absent competencies:
 
-These can live in a shared foundation namespace or be mirrored into each path.
+- `FND-001: The Failure Map` — Competency 11: LLM Failure Mode Reasoning
+  (context degradation, hallucination under ambiguity, tool error propagation)
+- `FND-002: The Workflow Contract` — Competency 12: Workflow Architecture
+  (checkpoints, scope declaration, human approval gates, restart discipline)
 
-### Phase 3: Patch role paths with targeted extensions
+These live in `cotudes/FND-001-the-failure-map/` and
+`cotudes/FND-002-the-workflow-contract/`. Both satisfy the dual requirement
+framework: real engineering task + named agent collaboration skill. Both follow
+the trap-then-correct model.
 
-Add the role-specific extensions where they matter most:
-- deeper harness/policy work for DOE and PSE
-- deeper app/system design work for STE and PSA
-- lighter conceptual versions for ASE
+The AGT layer (originally proposed as AGT-001 through AGT-006) is not authored.
+Its concepts are addressed by the cross-path sharing strategy. See the "Layer 2:
+Agent Systems Foundation" section above for the full disposition mapping.
+
+### Phase 3: Implement cross-path sharing clusters
+
+Apply Tier A sharing clusters during Fluency-tier authoring:
+- CI Feedback cluster (DOE-003, STE-009 built on DOE-001 scenario)
+- Context Calibration cluster (ASE-005 and STE-004 as one two-phase scenario)
+- Agent-Friendly Architecture cluster (STE-006, PSA-003 built on PSA-001 codebase)
+
+Apply Tier B clusters as Application-tier authoring begins:
+- Delegation matrix artifact (STE-003 first, then ASE-006)
+- Migration scenario (PSA-010 plans, STE-011 executes)
+- Recovery framework doc (shared between ASE-007 and STE-008)
 
 ### Phase 4: Standardize capstones
 
 Ensure every path has:
-- one clear capstone
-- the same required evidence model
-- comparable evaluation criteria
+- one clear capstone etude
+- the four-output evidence model: working artifact, interaction log, workflow
+  explanation, review packet
+- comparable evaluation criteria across paths
 
 ## Recommendation
 
 Use the following final structure:
 
-- **Shared Foundation**
-  tool use, LLM mental model, agentic loop, provider systems basics
-- **Shared Agent Systems Layer**
-  tool use, app-building, MCP, harness workflow
+- **Common Foundation** (2 etudes: FND-001, FND-002)
+  LLM failure mode reasoning and workflow architecture — the two competencies
+  absent from the current 10
 - **Role Path**
-  current competency-focused etudes by role
+  existing competency-focused etudes by role, with cross-path sharing clusters
+  applied to reduce redundancy and authoring effort
 - **Capstone**
-  one per role with common evidence requirements
+  one per role with the standardized four-output evidence model
 
-This keeps the best part of the current curriculum, while adding the missing
-transition path from software engineer to effective operator of agentic systems.
+This keeps the existing curriculum intact, eliminates AGT-layer redundancy,
+addresses the two genuine conceptual gaps with the minimum necessary new work,
+and reduces overall authoring effort through the sharing strategy.

@@ -1,0 +1,128 @@
+{
+  "etude_id": "FND-001",
+  "title": "The Failure Map",
+  "axiom": "Agent failures follow predictable patterns. Map them before you start.",
+  "competency": "LLM Failure Mode Reasoning",
+  "path": "foundation",
+  "tier_support": {
+    "smol": "full",
+    "frontier": "full"
+  },
+  "coach_prompt_smol": "You are a practice coach guiding a learner through FND-001: The Failure Map. The learner is adding a priority field to a task manager CLI. The exercise teaches three agent failure modes: context degradation, hallucination under ambiguity, and error propagation. In Part 1, let them encounter the failures naturally. Do NOT name the failure modes or warn them. In Part 2, help them fill in their failure map. Keep responses under 3 sentences. Ask Socratic questions. Never write code.",
+  "coach_prompt_frontier": "You are an expert practice coach for the cotudes curriculum, guiding a learner through FND-001: The Failure Map. This etude teaches LLM Failure Mode Reasoning -- the ability to predict and design around agent failure modes before starting a session.\n\nThe learner is adding a `priority` field (1-5) to a TypeScript task manager CLI. Business rules: priority defaults to 3; tasks tagged `#urgent` must have priority 4 or 5.\n\nThree failure modes are embedded in this task:\n1. **Context degradation**: The `#urgent` + priority constraint is likely to get lost as the conversation grows.\n2. **Hallucination under ambiguity**: The agent may suggest a package function or API that doesn't exist when asked about validation.\n3. **Error propagation**: A test failure may trigger a local fix that introduces new failures.\n\n**Part 1 (The Trap):** The learner describes the full task and lets the agent implement it. They encounter the failure modes naturally. Do NOT name the failure modes or hint at the pattern.\n\n**Part 2 (The Correction):** The learner creates `failure-map.md` naming each risk and its mitigation, then re-approaches the task.\n\n**The Axiom:** \"Agent failures follow predictable patterns. Map them before you start.\"\n\nYour role:\n- During Part 1: ask what the agent produced, what went wrong, what they had to correct\n- During Part 1 checkpoint: help them categorize failures WITHOUT naming the three modes yet\n- Transition to Part 2 by asking: \"Can you see a pattern in the failures?\"\n- During Part 2: help them write specific mitigations, not vague ones\n- During reflection: help them name the three failure modes and connect each to their experience\n- Never write implementation code\n- Keep responses focused and under 5 sentences unless reviewing pasted code",
+  "phases": [
+    {
+      "id": "setup",
+      "label": "Getting Started",
+      "content_md": "## The Setup\n\nThe `starter/` directory contains **taskman**, a TypeScript CLI that stores tasks in a local `tasks.json` file.\n\n```bash\ncd starter/\nnpm install\nnpm test       # all tests should pass\n```\n\nRead the code before you start. The `Task` interface in `src/types.ts`, the storage layer in `src/store.ts`, the four commands in `src/commands.ts`, and the CLI entry in `src/index.ts` are each under 40 lines.\n\n**Your assignment**: Add a `priority` field (1–5) to tasks:\n- Priority defaults to `3` if not specified\n- Tasks tagged `#urgent` must have priority `4` or `5`; `addTask` must enforce this\n- The `list` command must display priority for each task",
+      "coach_context": "The learner is reading the setup and getting oriented to the starter code. They haven't started yet.",
+      "coach_goals": [
+        "Help them understand the existing code structure",
+        "Ask what they plan to tell their agent",
+        "Do NOT suggest a failure map or any preparation -- let them approach naturally"
+      ],
+      "suggested_questions": [
+        "Have you read through the existing code? What patterns do you notice?",
+        "What would you say to your agent to describe this task?",
+        "What decisions will the agent need to make that you haven't specified yet?"
+      ]
+    },
+    {
+      "id": "part1_work",
+      "label": "Part 1: The Natural Approach",
+      "content_md": "## Part 1: The Natural Approach\n\nStart a fresh agent session in the `starter/` directory. Describe the task in full, including the business rules. Tell the agent about the `#urgent` constraint. Ask it to implement the priority feature with tests.\n\nLet the agent work. When it finishes, run `npm test`.",
+      "coach_context": "The learner is about to give the agent their natural task description. This is the trap phase. Let them approach naturally without preparation.",
+      "coach_goals": [
+        "Ask what they told the agent verbatim",
+        "Do NOT name any failure modes or suggest preparation",
+        "Ask them to observe what decisions the agent made without being asked"
+      ],
+      "suggested_questions": [
+        "What exactly did you say to your agent?",
+        "Did the agent ask any clarifying questions before starting?",
+        "While it was working, did you notice it making decisions you hadn't specified?"
+      ]
+    },
+    {
+      "id": "part1_checkpoint",
+      "label": "Part 1: Checkpoint",
+      "content_md": "### Checkpoint\n\nEvaluate the output against these specific scenarios:\n\n- [ ] Run `npm test`. Do all tests pass, including new priority tests?\n- [ ] In `src/types.ts`: does the `Task` interface include `priority: number`?\n- [ ] In `src/commands.ts`: does `addTask` enforce the `#urgent` + priority constraint?\n- [ ] Ask your agent: \"What package did you use for UUID generation?\" Run `npm ls <package>`. Is it installed?\n- [ ] Did the agent suggest any package or function that produced a runtime error?\n- [ ] After the agent's first error-fix cycle: did fixing one failure introduce another?\n\nRecord which failures you found and how many correction cycles they required.",
+      "coach_context": "The learner just finished Part 1 and is evaluating the agent's output. Help them identify what went wrong systematically.",
+      "coach_goals": [
+        "Work through each checkpoint item",
+        "Help them count total correction cycles",
+        "Ask them to notice patterns across failures -- do NOT name the three modes yet",
+        "Ask: 'Could you have predicted any of these before starting?'"
+      ],
+      "checklist": [
+        "npm test passes (all tests including priority tests)",
+        "Task interface includes priority: number",
+        "#urgent + priority validation present in addTask",
+        "UUID package is actually installed (not hallucinated)",
+        "No cascading test failures after first error fix"
+      ],
+      "suggested_questions": [
+        "How many correction cycles did this take in total?",
+        "Which failure was most surprising?",
+        "Looking back at your original prompt, was there anything you could have said differently?"
+      ]
+    },
+    {
+      "id": "part2_work",
+      "label": "Part 2: The Effective Approach",
+      "content_md": "## Part 2: The Effective Approach\n\nReset the starter to its original state. Before starting a new agent session, create `failure-map.md` in the `starter/` directory:\n\n```markdown\n# Failure Map: Priority Feature\n\n## Context Degradation Risk\n**Constraint at risk**:\n**Where in the conversation it appears**:\n**Mitigation**:\n\n## Hallucination Risk\n**Ambiguous area**:\n**Signal to watch for**:\n**Mitigation**:\n\n## Error Propagation Risk\n**Tool output most likely to mislead**:\n**Mitigation**:\n```\n\nFill in each section based on what you observed in Part 1. Be specific. Then re-approach the task with those mitigations active before you send your first prompt.",
+      "coach_context": "The learner is writing their failure map and re-approaching the task. Help them write specific, actionable mitigations -- not vague ones.",
+      "coach_goals": [
+        "Help them name the exact constraint at risk (the #urgent rule)",
+        "Help them name the exact ambiguous area (package/API choice)",
+        "Help them write a concrete mitigation for each -- not 'be careful'",
+        "After they re-approach: compare the experience to Part 1"
+      ],
+      "suggested_questions": [
+        "What specifically is the constraint at risk of being forgotten? When in the conversation does it appear?",
+        "What mitigation will you use -- how will you keep that constraint visible throughout?",
+        "For the hallucination risk: how will you resolve the ambiguity before the agent has to guess?"
+      ]
+    },
+    {
+      "id": "part2_checkpoint",
+      "label": "Part 2: Checkpoint",
+      "content_md": "### Checkpoint\n\n- [ ] Does `npm test` pass with the new feature?\n- [ ] Does the `#urgent` + priority validation work correctly?\n- [ ] Did you encounter the same hallucination? Did your mitigation help?\n- [ ] Did any errors cascade the way they did in Part 1?\n- [ ] How many correction cycles did Part 2 require vs. Part 1?",
+      "coach_context": "The learner has completed Part 2 and is comparing results. This is where the three failure modes get named explicitly.",
+      "coach_goals": [
+        "Compare correction cycle counts between Part 1 and Part 2",
+        "NOW name the three failure modes and connect each to their experience",
+        "Ask which mitigation had the most impact",
+        "Help them connect this to the axiom"
+      ],
+      "suggested_questions": [
+        "How many total correction cycles in Part 2 vs. Part 1?",
+        "Which of the three failure modes -- context degradation, hallucination, error propagation -- was hardest to mitigate?",
+        "In your own words, why does naming the risk before starting change what you do?"
+      ]
+    },
+    {
+      "id": "reflection",
+      "label": "Reflection",
+      "content_md": "## The Principle\n\nThe instinct when an agent produces bad output is to correct it. This works for a single session on a simple task. It fails to generalize because the corrections are reactive -- they address the output, not the conditions that produced it.\n\nA failure map is a two-minute pre-flight check. You read the task, identify the three risk zones, and write one mitigation for each. The act of writing the map changes how you structure the session: you pin the constraint that would get lost, you resolve the ambiguity before the agent guesses at it, and you commit to reading tool output yourself before handing it back.\n\n> **Agent failures follow predictable patterns. Map them before you start.**\n\n## Reflection\n\n1. **Prediction accuracy**: Did Part 1 produce the failure modes you expected? Were there failures you didn't anticipate?\n2. **Mitigation effectiveness**: Which mitigation had the highest impact? Which was hardest to execute?\n3. **Transferability**: For a task you are working on right now, write a failure map. Does writing it change how you would structure the session?\n4. **Meta-question**: Is a failure map a form of specification writing? How does naming the risks differ from specifying requirements?",
+      "coach_context": "The learner is reflecting on what they learned. Help them connect the experience to the axiom and to their daily work.",
+      "coach_goals": [
+        "Help them articulate the lesson in their own words",
+        "Connect their experience to the axiom",
+        "Ask about transfer to their real work",
+        "Ask them to write a failure map for a current task"
+      ],
+      "reflection_questions": [
+        "In your own words, what are the three agent failure modes?",
+        "Which failure mode do you expect to encounter most often in your work?",
+        "What is the difference between a failure map and a specification?",
+        "What would you tell a colleague who says 'I'll just fix it if something goes wrong'?"
+      ],
+      "suggested_questions": [
+        "Can you summarize the three failure modes in one sentence each?",
+        "What's the one thing you'll do differently before your next agent session?",
+        "How does naming a risk change how you handle it?"
+      ]
+    }
+  ]
+}
