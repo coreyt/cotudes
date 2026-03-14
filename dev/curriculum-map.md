@@ -27,6 +27,14 @@ The hard part is not learning commands or prompts. It is:
 - Developing judgment about agent output quality
 - Building workflows that compound agent effectiveness
 
+The curriculum is therefore **two-dimensional**:
+
+- **Dimension 1: Shared foundations** -- Every learner builds an LLM mental
+  model and workflow architecture foundation before role specialization.
+- **Dimension 2: Role-specific practice** -- Each role then develops the
+  engineering behaviors that matter most for that role through the
+  trap-then-correct model.
+
 ## Pedagogical Model: Trap-Then-Correct
 
 Adapted from cpptudes, each cotude follows a deliberate pattern:
@@ -66,10 +74,13 @@ Neither requirement is optional. An etude that teaches prompting through toy
 examples fails Requirement B. An etude that is just a coding exercise without
 agent collaboration patterns fails Requirement A.
 
-## The 10 Core Competencies
+## The 12 Core Competencies
 
 Derived from practitioner experience across Claude Code, Codex, Jules, and
-Antigravity, these are the skills that distinguish effective agent collaborators:
+Antigravity, these are the skills that distinguish effective agent collaborators.
+Competencies 1-10 are developed through the role-specific paths. Competencies
+11-12 are developed through the Common Foundation (FND-001, FND-002) and apply
+across all roles.
 
 | # | Competency | Description | Importance |
 |---|-----------|-------------|------------|
@@ -83,6 +94,53 @@ Antigravity, these are the skills that distinguish effective agent collaborators
 | 8 | **Parallel Orchestration** | Running multiple agent workflows on independent tasks. Managing cognitive overhead. | Medium |
 | 9 | **Recovery Patterns** | Handling agent failures, circular reasoning, and dead ends. Knowing when to abandon. | High |
 | 10 | **Architecture for Agents** | Designing systems that are agent-friendly: simple patterns, explicit types, good test coverage. | High |
+| 11 | **LLM Failure Mode Reasoning** | Predicting and designing around model failure modes: context degradation, hallucination under ambiguity, tool error propagation. | Critical |
+| 12 | **Workflow Architecture** | Structuring agent sessions with checkpoints, scope declaration, human approval gates, and restart discipline. | High |
+
+## Common Foundation
+
+Before entering any role path, every learner completes two shared etudes that
+cover Competencies 11 and 12 -- the two competencies absent from the
+role-specific paths.
+
+### FND-001: The Failure Map
+
+**Competency**: LLM Failure Mode Reasoning (Competency 11)
+
+**Focus**:
+- Context degradation, hallucination under ambiguity, tool error propagation
+- Recognizing the conditions that produce each failure mode
+- Designing prompts and workflows that avoid known failure patterns
+
+**Outcome**: Learner can predict common model failure modes and design around them.
+
+### FND-002: The Workflow Contract
+
+**Competency**: Workflow Architecture (Competency 12)
+
+**Focus**:
+- Checkpoints, scope declaration, human approval gates, restart discipline
+- Structuring agent sessions as explicit contracts with defined success criteria
+- Knowing when to continue vs. when to restart
+
+**Outcome**: Learner can design agent workflows with explicit structure and
+restart discipline.
+
+### Retired: Agent Systems Foundation (AGT Layer)
+
+An earlier proposal defined six pre-role etudes (AGT-001 through AGT-006) as an
+"Agent Systems Foundation" layer between the Common Foundation and role paths.
+This layer was not authored. Each AGT concept is addressed by existing or planned
+etudes through the cross-path sharing strategy:
+
+| AGT Concept | Addressed by |
+|-------------|--------------|
+| Agentic loop in practice | ASE-007 + STE-008 (Cluster 5, shared framework doc) |
+| Agentic tool use | ASE-006 + STE-003 (Cluster 4, delegation matrix) |
+| Good practices workflow | ASE-001, ASE-003, STE-002 (Cluster 8, spec template) |
+| Building small applications | Role capstones (ASE-015, STE-015, etc.) |
+| MCP concepts and boundaries | Delegation Judgment etudes + FND-002 |
+| Harness + agent + workflow | DOE-001/003 + STE-009 (Cluster 1) + FND-002 |
 
 ## The 6 Learning Paths
 
@@ -287,13 +345,17 @@ Capstones require all prior etudes in the path.
 
 ### Cross-Path Prerequisites
 
-None required. Each path is self-contained. However, recommended cross-training:
+**Required**: All roles must complete **FND-001 (The Failure Map)** and
+**FND-002 (The Workflow Contract)** before entering any role path. These cover
+Competencies 11 and 12 (LLM Failure Mode Reasoning and Workflow Architecture),
+which are not addressed by the role-specific paths.
 
-- Staff Engineers benefit from completing ASE-001 through ASE-005 first (as a
-  humility check -- the basics still apply)
-- Principal Engineers should complete at least one path's Foundation tier
-- Architects should complete STE-006 (Agent-Friendly Architecture) from the
-  Staff path
+**Recommended cross-training**:
+
+- Staff Engineers: complete ASE-001 through ASE-005 first (humility check --
+  the basics still apply)
+- Principal Engineers: complete at least one path's Foundation tier
+- Architects: complete STE-006 (Agent-Friendly Architecture) from the Staff path
 
 ## Cross-Path Lesson Sharing
 
@@ -440,7 +502,29 @@ shared artifacts, and shared setup infrastructure, not from removing content.
 | Spec Template | 6 etudes | shared template artifact |
 | Setup | 6 x -000 | shared core script |
 
+## Shared Systems Design
+
+All roles complete a basic systems design orientation covering:
+
+- Agent, harness, and tool boundaries
+- Execution environments
+- Permissions and capability control
+- Verification and observability loops
+- Human approval points
+
+This is introduced in the Common Foundation (FND-001, FND-002) and revisited
+in role-specific etudes at the appropriate level of depth.
+
+**Reference implementation**: [Block Workflow](https://block.xyz) with
+[Goose](https://block.github.io/goose) is used as the concrete working example
+-- a harness + agent + tools + verification + restart pattern that gives
+learners one stable reference before applying the concepts to their own
+toolchain. Tool selection for individual etudes remains language- and
+stack-agnostic.
+
 ## Assessment Model
+
+### Regular Etudes
 
 Each etude produces two artifacts:
 
@@ -454,6 +538,29 @@ Assessment criteria:
 - Does the code meet the engineering requirements?
 - Did the agent interaction demonstrate the target competency?
 - Can the learner articulate the underlying principle (axiom)?
+
+### Capstones
+
+Each capstone produces four outputs (a superset of the regular etude requirements):
+
+1. **Working Artifact** -- Code, system design, pipeline, schema, or
+   application depending on role
+2. **Interaction Log** -- The actual agent collaboration record, annotated by
+   the learner
+3. **Workflow Explanation** -- Why the learner used a particular loop, tool
+   pattern, checkpoint strategy, or restart decision
+4. **Review Packet** -- Risks found, tests and checks run, unresolved concerns,
+   and what the learner would change in a second pass
+
+Capstone themes by role:
+
+- **ASE**: build a small feature or app safely with agent assistance
+- **STE**: deliver a multi-step system feature using coordinated agents and review
+- **PSE**: define and evaluate an org-level agent engineering practice
+- **PSA**: redesign a system to be agent-friendly and operationally governable
+- **DOE**: build a guarded CI/CD or platform workflow for agent-produced changes
+- **DME**: deliver a data workflow with correctness, governance, and recovery
+  built in
 
 ## Technology Stack
 
