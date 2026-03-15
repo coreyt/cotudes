@@ -107,9 +107,10 @@ cotudes
 │   │   ├── · ASE-011  Building on Foundation
 │   │   ├── · ASE-012  The Refactor
 │   │   ├── · ASE-013  Edge Cases
-│   │   └── · ASE-014  The Integration
+│   │   ├── · ASE-014  The Integration
+│   │   └── · ASE-015  The Stack Trace
 │   └── Capstone
-│       └── · ASE-015  Feature Build
+│       └── · ASE-016  Feature Build
 │
 ├── STE  Staff Software Engineer
 │   ├── setup
@@ -130,9 +131,10 @@ cotudes
 │   │   ├── · STE-011  The Migration
 │   │   ├── · STE-012  Cross-Cutting Concerns
 │   │   ├── · STE-013  The Performance Review
-│   │   └── · STE-014  Team Patterns
+│   │   ├── · STE-014  Team Patterns
+│   │   └── · STE-015  The Living Manual
 │   └── Capstone
-│       └── ~ STE-015  System Feature
+│       └── ~ STE-016  System Feature
 │
 ├── PSE  Principal Software Engineer
 │   ├── setup
@@ -149,9 +151,10 @@ cotudes
 │   ├── Application
 │   │   ├── · PSE-008  Cross-Team Consistency
 │   │   ├── · PSE-009  The Skill Preservation
-│   │   └── · PSE-010  Security Surface Review
+│   │   ├── · PSE-010  Security Surface Review
+│   │   └── · PSE-011  The Onboarding Flow
 │   └── Capstone
-│       └── · PSE-011  Org-Wide Practice
+│       └── · PSE-012  Org-Wide Practice
 │
 ├── PSA  Principal Software Architect
 │   ├── setup
@@ -168,9 +171,10 @@ cotudes
 │   ├── Application
 │   │   ├── · PSA-008  The Data Architecture
 │   │   ├── · PSA-009  Compliance and Governance
-│   │   └── · PSA-010  The Migration Strategy
+│   │   ├── · PSA-010  The Migration Strategy
+│   │   └── · PSA-011  The Compliance Compiler
 │   └── Capstone
-│       └── ~ PSA-011  System Redesign
+│       └── ~ PSA-012  System Redesign
 │
 ├── DOE  Staff DevOps/CI-CD Engineer
 │   ├── setup
@@ -187,9 +191,10 @@ cotudes
 │   ├── Application
 │   │   ├── · DOE-008  The Incident Response
 │   │   ├── · DOE-009  Platform Engineering
-│   │   └── · DOE-010  Cost and Resource Management
+│   │   ├── · DOE-010  Cost and Resource Management
+│   │   └── · DOE-011  The Secret Handshake
 │   └── Capstone
-│       └── ~ DOE-011  Pipeline Overhaul
+│       └── ~ DOE-012  Pipeline Overhaul
 │
 └── DME  Staff Data Management Engineer
     ├── setup
@@ -206,12 +211,13 @@ cotudes
     ├── Application
     │   ├── · DME-008  Performance at Scale
     │   ├── · DME-009  The Access Pattern
-    │   └── · DME-010  Data Governance
+    │   ├── · DME-010  Data Governance
+    │   └── · DME-011  The Sample Set
     └── Capstone
-        └── · DME-011  Data Platform
+        └── · DME-012  Data Platform
 ```
 
-9 complete · 15 stubbed · 58 planned · 82 total (2 FND + 80 role-path)
+9 complete · 15 stubbed · 64 planned · 88 total (2 FND + 86 role-path)
 
 ### Where to Start
 

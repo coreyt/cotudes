@@ -64,7 +64,7 @@ that evolve based on observed agent behavior. **Axiom: Agent guidelines are code
 | PSE-006 | Design Review Protocol | Output Evaluation | Review standards for agent output (2) | Process |
 | PSE-007 | Prototype vs. Production | Delegation Judgment | Agent prototype mistaken for production-ready (4) | Any |
 
-### Application (PSE-008 to PSE-010)
+### Application (PSE-008 to PSE-011)
 
 | # | Title | Competency | Trap (Severity) | Stack |
 |---|-------|-----------|------------------|-------|
@@ -73,16 +73,30 @@ that evolve based on observed agent behavior. **Axiom: Agent guidelines are code
 | PSE-010 | Security Surface Review | Output Evaluation | Agent-introduced vulnerabilities (3) | Any |
 | PSE-011 | The Onboarding Flow | Delegation Judgment | New hire drowning in agent-generated code (3) | Process |
 
-### Capstone (PSE-011)
+### Capstone (PSE-012)
 
 | # | Title | Competency | Stack |
 |---|-------|-----------|-------|
-| PSE-011 | Org-Wide Practice | All | Process + Code |
+| PSE-012 | Org-Wide Practice | All | Process + Code |
 
 Establish agent collaboration practices for a multi-team engineering org:
 guidelines document, review protocol, measurement framework, and training
-recommendations. Produce both the practice documentation and a reference
-implementation.
+recommendations. The learner must produce four outputs: the practice
+documentation, a reference implementation, a workflow explanation, and a
+review packet.
+
+## Prerequisites
+
+```
+FND-001 (LLM Failure Mode Reasoning) → FND-002 (Workflow Architecture)
+    └── PSE-000 (Setup)
+        └── PSE-001 (Architecture for Agents)
+        └── PSE-002 (Output Evaluation)
+        └── PSE-003 (Context Engineering)
+                └── PSE-004 through PSE-007 (Fluency)
+                        └── PSE-008 through PSE-011 (Application)
+                                └── PSE-012 (Capstone)
+```
 
 ## Recommended Cross-Training
 

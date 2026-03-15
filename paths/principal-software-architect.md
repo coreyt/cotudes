@@ -66,25 +66,40 @@ should fit in an agent's context window and a human's working memory.**
 | PSA-006 | The Platform Decision | Delegation Judgment | Build-with-agent vs. buy vs. build-yourself (2) | Analysis |
 | PSA-007 | Observability Design | Feedback Loop Design | Monitoring agent-generated system behavior (2) | Go / TypeScript |
 
-### Application (PSA-008 to PSA-010)
+### Application (PSA-008 to PSA-011)
 
 | # | Title | Competency | Trap (Severity) | Stack |
 |---|-------|-----------|------------------|-------|
 | PSA-008 | The Data Architecture | Architecture for Agents | Schema design agents can reason about (3) | SQL / Any |
 | PSA-009 | Compliance and Governance | Output Evaluation | Agent output meeting regulatory requirements (2) | Process + Code |
 | PSA-010 | The Migration Strategy | Task Decomposition | Large-scale migration planned for agent execution (2) | Architecture |
-| PSA-011 | The Compliance Compiler | Architecture for Agents | Prompting "ensure GDPR compliance" (4) | Architecture |
+| PSA-011 | The Compliance Compiler | Architecture for Agents | Prompting "ensure GDPR compliance" instead of specifying requirements (4) | Architecture |
 
-### Capstone (PSA-011)
+### Capstone (PSA-012)
 
 | # | Title | Competency | Stack |
 |---|-------|-----------|-------|
-| PSA-011 | System Redesign | All | Architecture + Code |
+| PSA-012 | System Redesign | All | Architecture + Code |
 
 Redesign an existing system with agent collaboration explicitly considered:
 module boundaries that fit agent context windows, documented invariants, ADRs
 structured as implementation contracts, and observability for agent-generated
-code behavior.
+code behavior. The learner must produce four outputs: the redesigned
+architecture, an annotated interaction log, a workflow explanation, and a
+review packet.
+
+## Prerequisites
+
+```
+FND-001 (LLM Failure Mode Reasoning) → FND-002 (Workflow Architecture)
+    └── PSA-000 (Setup)
+        └── PSA-001 (Architecture for Agents)
+        └── PSA-002 (Specification Writing)
+        └── PSA-003 (Architecture for Agents)
+                └── PSA-004 through PSA-007 (Fluency)
+                        └── PSA-008 through PSA-011 (Application)
+                                └── PSA-012 (Capstone)
+```
 
 ## Recommended Cross-Training
 

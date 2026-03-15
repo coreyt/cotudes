@@ -179,7 +179,8 @@ Evaluation, Feedback Loop Design
 | ASE-012 | The Refactor | Task Decomposition | Refactoring without incremental verification |
 | ASE-013 | Edge Cases | Output Evaluation | Agent-generated code missing boundary conditions |
 | ASE-014 | The Integration | Task Decomposition | Integrating agent code into existing systems |
-| ASE-015 | Capstone: Feature Build | All | End-to-end feature using all competencies |
+| ASE-015 | The Stack Trace | Feedback Loop Design | Pasting error output to the agent without reading it |
+| ASE-016 | Capstone: Feature Build | All | End-to-end feature using all competencies |
 
 ### Path 2: Staff Software Engineer (16 etudes)
 
@@ -212,7 +213,8 @@ Judgment, Architecture for Agents
 | STE-012 | Cross-Cutting Concerns | Context Engineering | Agent unaware of system-wide constraints |
 | STE-013 | The Performance Review | Output Evaluation | Evaluating non-functional agent output quality |
 | STE-014 | Team Patterns | Delegation Judgment | Establishing agent practices for a team |
-| STE-015 | Capstone: System Feature | All | End-to-end system feature across multiple services |
+| STE-015 | The Living Manual | Context Engineering | Docs that rot; agent follows stale instructions |
+| STE-016 | Capstone: System Feature | All | End-to-end system feature across multiple services |
 
 ### Path 3: Principal Software Engineer (12 etudes)
 
@@ -241,7 +243,8 @@ Evaluation, Context Engineering
 | PSE-008 | Cross-Team Consistency | Context Engineering | Different teams using agents with incompatible patterns |
 | PSE-009 | The Skill Preservation | Delegation Judgment | Team skills atrophying from over-reliance |
 | PSE-010 | Security Surface Review | Output Evaluation | Agent-introduced vulnerabilities in subtle patterns |
-| PSE-011 | Capstone: Org-Wide Practice | All | Establishing agent practices across an engineering org |
+| PSE-011 | The Onboarding Flow | Delegation Judgment | New hire drowning in agent-generated code |
+| PSE-012 | Capstone: Org-Wide Practice | All | Establishing agent practices across an engineering org |
 
 ### Path 4: Principal Software Architect (12 etudes)
 
@@ -270,7 +273,8 @@ Delegation Judgment, Specification Writing
 | PSA-008 | The Data Architecture | Architecture for Agents | Schema design that agents can reason about |
 | PSA-009 | Compliance and Governance | Output Evaluation | Ensuring agent output meets regulatory requirements |
 | PSA-010 | The Migration Strategy | Task Decomposition | Planning large-scale migrations for agent execution |
-| PSA-011 | Capstone: System Redesign | All | Redesigning a system with agent collaboration in mind |
+| PSA-011 | The Compliance Compiler | Architecture for Agents | Prompting "ensure GDPR compliance" instead of specifying requirements |
+| PSA-012 | Capstone: System Redesign | All | Redesigning a system with agent collaboration in mind |
 
 ### Path 5: Staff DevOps / CI/CD Engineer (12 etudes)
 
@@ -300,7 +304,8 @@ Engineering, Architecture for Agents
 | DOE-008 | The Incident Response | Recovery Patterns | Using agents during incidents (speed vs. risk) |
 | DOE-009 | Platform Engineering | Architecture for Agents | Building internal platforms that agents can operate |
 | DOE-010 | Cost and Resource Management | Delegation Judgment | Agent-provisioned resources without cost awareness |
-| DOE-011 | Capstone: Pipeline Overhaul | All | End-to-end CI/CD redesign for agent-augmented teams |
+| DOE-011 | The Secret Handshake | Output Evaluation | Agent hardcoding "test" secrets in IaC and configs |
+| DOE-012 | Capstone: Pipeline Overhaul | All | End-to-end CI/CD redesign for agent-augmented teams |
 
 ### Path 6: Staff Data Management Engineer (12 etudes)
 
@@ -330,7 +335,8 @@ Design, Context Engineering
 | DME-008 | Performance at Scale | Output Evaluation | Agent queries that work on dev but fail at prod scale |
 | DME-009 | The Access Pattern | Architecture for Agents | Designing data APIs that agents can reason about |
 | DME-010 | Data Governance | Specification Writing | Ensuring agent output respects PII and retention policies |
-| DME-011 | Capstone: Data Platform | All | End-to-end data platform feature with agent collaboration |
+| DME-011 | The Sample Set | Context Engineering | Agent guessing at data distribution without representative samples |
+| DME-012 | Capstone: Data Platform | All | End-to-end data platform feature with agent collaboration |
 
 ## Prerequisite Dependencies
 
@@ -486,8 +492,8 @@ setup script to maintain for the common parts.
 
 ### Summary: Authoring Reduction
 
-By applying the sharing strategy above, the 65 total planned etudes reduce to roughly
-**50 unique authoring efforts** -- the 15-etude reduction comes from shared scenarios,
+By applying the sharing strategy above, the 88 total planned etudes reduce to roughly
+**73 unique authoring efforts** -- the 15-etude reduction comes from shared scenarios,
 shared artifacts, and shared setup infrastructure, not from removing content.
 
 | Cluster | Etudes Affected | Authoring Reduction |

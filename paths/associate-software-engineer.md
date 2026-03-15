@@ -101,7 +101,7 @@ the learner diagnoses the root cause themselves, provides a precise description,
 and the agent fixes it in one pass. **Axiom: Agents fix symptoms; engineers
 diagnose root causes.**
 
-### Application (ASE-008 to ASE-014)
+### Application (ASE-008 to ASE-015)
 
 | # | Title | Competency | Trap (Severity) | Stack |
 |---|-------|-----------|------------------|-------|
@@ -114,30 +114,31 @@ diagnose root causes.**
 | ASE-014 | The Integration | Task Decomposition | Integrating agent code into existing systems (3) | TypeScript |
 | ASE-015 | The Stack Trace | Feedback Loop Design | Pasting error text without reading it (4) | TypeScript |
 
-### Capstone (ASE-015)
+### Capstone (ASE-016)
 
 | # | Title | Competency | Trap | Stack |
 |---|-------|-----------|------|-------|
-| ASE-015 | Feature Build | All | End-to-end feature using all competencies | TypeScript |
+| ASE-016 | Feature Build | All | End-to-end feature using all competencies | TypeScript |
 
 The capstone requires the learner to build a complete feature from requirements
-through deployment-ready code, using all competencies learned in the path. They
-must produce both working code and an annotated interaction log demonstrating
-effective agent collaboration at each stage.
+through deployment-ready code, using all competencies learned in the path. The
+learner must produce four outputs: working code, an annotated interaction log,
+a workflow explanation, and a review packet.
 
 ## Prerequisites
 
 ```
-ASE-000 (Setup)
-    └── ASE-001 (Specification Writing)
-    └── ASE-002 (Output Evaluation)
-    └── ASE-003 (Feedback Loops)
-            └── ASE-004 (Task Decomposition)
-            └── ASE-005 (Context Engineering)
-            └── ASE-006 (Delegation Judgment)
-            └── ASE-007 (Recovery Patterns)
-                    └── ASE-008 through ASE-015 (Application)
-                            └── ASE-015 (Capstone)
+FND-001 (LLM Failure Mode Reasoning) → FND-002 (Workflow Architecture)
+    └── ASE-000 (Setup)
+        └── ASE-001 (Specification Writing)
+        └── ASE-002 (Output Evaluation)
+        └── ASE-003 (Feedback Loops)
+                └── ASE-004 (Task Decomposition)
+                └── ASE-005 (Context Engineering)
+                └── ASE-006 (Delegation Judgment)
+                └── ASE-007 (Recovery Patterns)
+                        └── ASE-008 through ASE-015 (Application)
+                                └── ASE-016 (Capstone)
 ```
 
 ## Assessment Criteria

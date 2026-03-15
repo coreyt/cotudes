@@ -89,7 +89,7 @@ duplicates data because it lacks idempotency guarantees. **Axiom: An agent
 builds for the happy path unless you specify the unhappy paths -- data pipelines
 must handle failure recovery by design.**
 
-### Application (DME-008 to DME-010)
+### Application (DME-008 to DME-011)
 
 | # | Title | Competency | Trap (Severity) | Stack |
 |---|-------|-----------|------------------|-------|
@@ -106,27 +106,29 @@ data volumes, with index analysis as part of agent output review. **Axiom:
 Query performance is a property of data volume, not query syntax -- test at
 scale or specify scale constraints.**
 
-### Capstone (DME-011)
+### Capstone (DME-012)
 
 | # | Title | Competency | Stack |
 |---|-------|-----------|-------|
-| DME-011 | Data Platform | All | SQL + Python + dbt |
+| DME-012 | Data Platform | All | SQL + Python + dbt |
 
 End-to-end data platform feature: schema design from specification, migration
 with data assertions, ETL pipeline with quality gates, analytical queries with
-verified correctness, and documentation of data lineage. Requires agent
-collaboration at every stage with appropriate review discipline for each.
+verified correctness, and documentation of data lineage. The learner must
+produce four outputs: the working data platform feature, an annotated
+interaction log, a workflow explanation, and a review packet.
 
 ## Prerequisites
 
 ```
-DME-000 (Setup)
-    └── DME-001 (Specification Writing)
-    └── DME-002 (Output Evaluation)
-    └── DME-003 (Output Evaluation)
-            └── DME-004 through DME-007 (Fluency)
-                    └── DME-008 through DME-011 (Application)
-                            └── DME-011 (Capstone)
+FND-001 (LLM Failure Mode Reasoning) → FND-002 (Workflow Architecture)
+    └── DME-000 (Setup)
+        └── DME-001 (Specification Writing)
+        └── DME-002 (Output Evaluation)
+        └── DME-003 (Output Evaluation)
+                └── DME-004 through DME-007 (Fluency)
+                        └── DME-008 through DME-011 (Application)
+                                └── DME-012 (Capstone)
 ```
 
 ## Recommended Cross-Training

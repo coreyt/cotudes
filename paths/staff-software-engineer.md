@@ -95,7 +95,7 @@ APIs, subtle incorrectness, missing edge cases) with automated verification.
 **Axiom: AI cannot reliably catch its own class of errors -- human review and
 automated verification serve different purposes.**
 
-### Application (STE-008 to STE-014)
+### Application (STE-008 to STE-015)
 
 | # | Title | Competency | Trap (Severity) | Stack |
 |---|-------|-----------|------------------|-------|
@@ -108,27 +108,28 @@ automated verification serve different purposes.**
 | STE-014 | Team Patterns | Delegation Judgment | Establishing agent practices for a team (2) | Go |
 | STE-015 | The Living Manual | Context Engineering | Docs rot; agent follows old instructions (3) | Go |
 
-### Capstone (STE-015)
+### Capstone (STE-016)
 
 | # | Title | Competency | Stack |
 |---|-------|-----------|-------|
-| STE-015 | System Feature | All | Go |
+| STE-016 | System Feature | All | Go |
 
 End-to-end system feature across multiple services, requiring spec-driven
 development, context engineering, delegation decisions, and team-level review
-practices. The capstone requires both working code and a documented workflow
-that could be shared with a team.
+practices. The learner must produce four outputs: working code, an annotated
+interaction log, a workflow explanation, and a review packet.
 
 ## Prerequisites
 
 ```
-STE-000 (Setup)
-    └── STE-001 (Context Engineering)
-    └── STE-002 (Specification Writing)
-    └── STE-003 (Delegation Judgment)
-            └── STE-004 through STE-007 (Fluency)
-                    └── STE-008 through STE-015 (Application)
-                            └── STE-015 (Capstone)
+FND-001 (LLM Failure Mode Reasoning) → FND-002 (Workflow Architecture)
+    └── STE-000 (Setup)
+        └── STE-001 (Context Engineering)
+        └── STE-002 (Specification Writing)
+        └── STE-003 (Delegation Judgment)
+                └── STE-004 through STE-007 (Fluency)
+                        └── STE-008 through STE-015 (Application)
+                                └── STE-016 (Capstone)
 ```
 
 ## Recommended Cross-Training
