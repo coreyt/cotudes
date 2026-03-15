@@ -8,7 +8,7 @@ paths, or evaluate the overall curriculum structure for coherence and coverage.
 Use this skill when:
 - Creating a specification for a new cotude
 - Evaluating prerequisite chains across a learning path
-- Checking competency coverage (are all 10 covered?)
+- Checking competency coverage (are all 12 covered?)
 - Identifying gaps or redundancies in the curriculum
 - Sequencing etudes within a path
 
@@ -33,7 +33,11 @@ its place in the sequence.
 - **Application (008-010+)**: Parallel orchestration, session management, architecture
 - **Capstone**: Integration of all competencies
 
-### The 10 Core Competencies
+### The 12 Core Competencies
+
+Competencies 1-10 are taught within role paths. Competencies 11-12 are taught
+by the Common Foundation (FND-001, FND-002) required before any role path.
+
 1. Specification Writing
 2. Context Engineering
 3. Task Decomposition
@@ -44,6 +48,8 @@ its place in the sequence.
 8. Parallel Orchestration
 9. Recovery Patterns
 10. Architecture for Agents
+11. LLM Failure Mode Reasoning
+12. Workflow Architecture
 
 ## Output Format
 
@@ -55,7 +61,7 @@ When producing an etude specification:
 ## Metadata
 - **Path**: [role]
 - **Number**: ###
-- **Primary Competency**: [one of 10]
+- **Primary Competency**: [one of 12]
 - **Secondary Competencies**: [list]
 - **Trap Severity**: [1-5]
 - **Prerequisites**: [list]
@@ -95,7 +101,7 @@ When evaluating curriculum coherence:
 ## Curriculum Analysis: [Path Name]
 
 ### Coverage
-[Table: each of the 10 competencies and which etudes cover it]
+[Table: each of the 12 competencies and which etudes cover it]
 
 ### Prerequisite Chain
 [Dependency diagram in text form]

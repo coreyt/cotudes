@@ -78,7 +78,7 @@ Produce a specification document containing:
 ## Metadata
 - **Path**: [Associate SE | Staff SE | Principal SE | Principal Architect | Staff DevOps | Staff Data Eng]
 - **Number**: ###
-- **Primary Competency**: [one of the 10 Core Competencies]
+- **Primary Competency**: [one of the 12 Core Competencies]
 - **Secondary Competencies**: [list]
 - **Trap Severity**: [1-5]
 - **Prerequisites**: [list of prior etudes]
@@ -122,7 +122,7 @@ Produce a specification document containing:
 
 ### When Reviewing the Curriculum
 
-1. Identify coverage gaps -- are all 10 competencies adequately covered?
+1. Identify coverage gaps -- are all 12 competencies adequately covered?
 2. Identify redundancy -- do multiple etudes teach the same lesson?
 3. Verify role authenticity -- does each path reflect real work for that role?
 4. Check axiom uniqueness -- is each axiom distinct and non-overlapping?

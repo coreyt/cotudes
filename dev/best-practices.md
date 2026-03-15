@@ -25,7 +25,7 @@ Trap severity scale:
 
 ### 3. One Primary Skill Per Etude
 
-Each cotude targets one primary competency from the 10 Core Competencies.
+Each cotude targets one primary competency from the 12 Core Competencies.
 Secondary competencies may be exercised, but the primary skill must be the clear
 focus. If an etude tries to teach specification writing AND parallel
 orchestration AND context engineering, it teaches none of them well.

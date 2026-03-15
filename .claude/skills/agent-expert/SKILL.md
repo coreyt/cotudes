@@ -62,7 +62,7 @@ When analyzing an etude for Requirement A:
 - **Trigger**: [What instinct triggers this trap?]
 
 ### Skill Assessment
-- **Primary Competency**: [Which of the 10 Core Competencies?]
+- **Primary Competency**: [Which of the 12 Core Competencies?]
 - **Transferability**: [Does this skill work across different agent tools?]
 - **Contrast Clarity**: [Can the learner see the difference?]
 

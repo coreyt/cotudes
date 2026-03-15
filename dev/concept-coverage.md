@@ -1,14 +1,26 @@
 # Concept Coverage Matrix
 
-## The 10 Core Competencies Across All Paths
+## The 12 Core Competencies Across All Paths
 
 This document tracks which competencies are covered by which etudes, ensuring
-adequate coverage and identifying gaps.
+adequate coverage and identifying gaps. Competencies 11-12 are covered
+exclusively by the Common Foundation (FND-001, FND-002) and are not tracked
+in the role-path matrices below.
 
 ### Coverage Legend
 - **P** = Primary competency (the main focus of the etude)
 - **S** = Secondary competency (exercised but not the focus)
 - **-** = Not covered
+
+## Common Foundation (FND)
+
+| Etude | LLM Failure Mode Reasoning (C11) | Workflow Architecture (C12) |
+|-------|:-:|:-:|
+| FND-001 The Failure Map | P | - |
+| FND-002 The Workflow Contract | - | P |
+
+These two competencies are prerequisites for all role paths and are not
+re-covered within the role-specific sequences.
 
 ## Associate Software Engineer (ASE)
 
@@ -56,7 +68,7 @@ for the Associate level.
 | STE-015 | S | S | S | S | S | S | S | S | S | S |
 | **Total** | **1P** | **3P** | **1P** | **2P** | **2P** | **1P** | **1P** | **1P** | **1P** | **1P** |
 
-**Gap Analysis**: Full coverage across all 10 competencies.
+**Gap Analysis**: Full coverage across all 10 role-path competencies.
 
 ## Cross-Path Coverage Summary
 
@@ -82,10 +94,17 @@ for the Associate level.
   in longer-running paths (Architect, DevOps)
 - Architecture for Agents scales from absent (ASE) to dominant (PSA) -- this
   correctly reflects role progression
+- Competencies 11 and 12 (LLM Failure Mode Reasoning, Workflow Architecture)
+  are covered once in the Common Foundation and not repeated in role paths
 
 ## Competency Dependency Graph
 
 ```
+LLM Failure Mode Reasoning (C11) ─┐
+                                   ├── Common Foundation (required before all paths)
+Workflow Architecture (C12) ───────┘
+        │
+        ▼
 Specification Writing ─────────────────────────────────── Foundation
         │
 Context Engineering ──────── Session Management            │
@@ -101,5 +120,7 @@ Feedback Loop Design                                       │
 Architecture for Agents ──────────────────────────────── Advanced
 ```
 
-Specification Writing and Output Evaluation are foundational -- every other
-competency builds on the ability to specify intent and evaluate results.
+Competencies 11-12 underpin the entire curriculum -- learners who understand
+LLM failure modes and workflow structure are better positioned to develop all
+10 role-specific competencies. Specification Writing and Output Evaluation
+remain foundational within role paths.

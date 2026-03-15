@@ -38,7 +38,11 @@ the skills that separate effective agent collaborators from frustrated ones.
 cotudes develops these skills through deliberate practice on real engineering
 tasks.
 
-## The 10 Core Competencies
+## The 12 Core Competencies
+
+Competencies 1-10 are developed through the role-specific paths. Competencies
+11-12 are covered by the Common Foundation (FND-001, FND-002) required before
+any role path.
 
 | # | Competency | What It Means |
 |---|-----------|--------------|
@@ -52,11 +56,17 @@ tasks.
 | 8 | Parallel Orchestration | Running multiple agent workflows |
 | 9 | Recovery Patterns | Handling agent failures and dead ends |
 | 10 | Architecture for Agents | Designing agent-friendly systems |
+| 11 | LLM Failure Mode Reasoning | Predicting and designing around model failure modes |
+| 12 | Workflow Architecture | Structuring sessions with checkpoints and restart discipline |
 
-## 6 Learning Paths
+## Common Foundation + 6 Learning Paths
 
-Each path targets a specific engineering role with etudes calibrated to their
-experience level, daily responsibilities, and unique challenges.
+All learners complete **FND-001 (The Failure Map)** and **FND-002 (The Workflow
+Contract)** before entering a role path. These two etudes cover Competencies 11
+and 12, which are not addressed within the role-specific sequences.
+
+Each role path then targets a specific engineering role with etudes calibrated
+to their experience level, daily responsibilities, and unique challenges.
 
 | Path | Role | Etudes | Primary Focus |
 |------|------|--------|--------------|
@@ -102,6 +112,8 @@ cotudes
 │       └── · ASE-015  Feature Build
 │
 ├── STE  Staff Software Engineer
+│   ├── setup
+│   │   └── · STE-000  Setup
 │   ├── Foundation
 │   │   ├── ✓ STE-001  The CLAUDE.md
 │   │   ├── ~ STE-002  Spec-Driven Development
@@ -123,6 +135,8 @@ cotudes
 │       └── ~ STE-015  System Feature
 │
 ├── PSE  Principal Software Engineer
+│   ├── setup
+│   │   └── · PSE-000  Setup
 │   ├── Foundation
 │   │   ├── ✓ PSE-001  The Architecture Review
 │   │   ├── · PSE-002  Technical Debt Triage
@@ -140,6 +154,8 @@ cotudes
 │       └── · PSE-011  Org-Wide Practice
 │
 ├── PSA  Principal Software Architect
+│   ├── setup
+│   │   └── · PSA-000  Setup
 │   ├── Foundation
 │   │   ├── ✓ PSA-001  Agent-Friendly System Design
 │   │   ├── ~ PSA-002  The Specification as Contract
@@ -157,6 +173,8 @@ cotudes
 │       └── ~ PSA-011  System Redesign
 │
 ├── DOE  Staff DevOps/CI-CD Engineer
+│   ├── setup
+│   │   └── · DOE-000  Setup
 │   ├── Foundation
 │   │   ├── ✓ DOE-001  The CI Feedback Loop
 │   │   ├── ~ DOE-002  IaC with Agents
@@ -174,6 +192,8 @@ cotudes
 │       └── ~ DOE-011  Pipeline Overhaul
 │
 └── DME  Staff Data Management Engineer
+    ├── setup
+    │   └── · DME-000  Setup
     ├── Foundation
     │   ├── ✓ DME-001  The Schema Design
     │   ├── · DME-002  Migration Safety
@@ -186,17 +206,17 @@ cotudes
     ├── Application
     │   ├── · DME-008  Performance at Scale
     │   ├── · DME-009  The Access Pattern
-    │   ├── · DME-010  Data Governance
-    │   └── · DME-011  The Sample Set
+    │   └── · DME-010  Data Governance
     └── Capstone
         └── · DME-011  Data Platform
 ```
 
-9 complete · 15 stubbed · 55 planned · 79 total (2 FND + 77 role-path)
+9 complete · 15 stubbed · 58 planned · 82 total (2 FND + 80 role-path)
 
 ### Where to Start
 
-- **New to agents?** Start with [ASE-000](cotudes/ASE-000-setup/README.md) (Environment Setup)
+- **Everyone**: Begin with [FND-001](cotudes/FND-001-the-failure-map/README.md) and [FND-002](cotudes/FND-002-the-workflow-contract/README.md) (Common Foundation -- required before any role path)
+- **New to agents?** Then start with [ASE-000](cotudes/ASE-000-setup/README.md) (Environment Setup)
 - **Experienced engineer, new to agents?** Start with [STE-001](paths/staff-software-engineer.md) (The CLAUDE.md)
 - **Leading teams?** Start with [PSE-001](paths/principal-software-engineer.md) (The Architecture Review)
 - **Infrastructure focus?** Start with [DOE-001](paths/staff-devops-engineer.md) (The CI Feedback Loop)
@@ -230,7 +250,8 @@ cotudes/
 │   ├── curriculum-map.md        # Overall curriculum plan and philosophy
 │   ├── best-practices.md        # Design principles for etude authoring
 │   ├── concept-coverage.md      # Competency coverage matrix
-│   └── draft-prompts.md         # Multi-agent authoring pipeline
+│   ├── draft-prompts.md         # Multi-agent authoring pipeline prompts
+│   └── etude-authoring-process.md  # Implementation phases and status
 └── README.md
 ```
 
