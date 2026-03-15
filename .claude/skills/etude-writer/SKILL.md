@@ -46,7 +46,7 @@ cotudes/[PATH]-[###]-[slug]/
 | Field | Value |
 |-------|-------|
 | Path | [role] |
-| Primary Competency | [one of 10] |
+| Primary Competency | [one of 12] |
 | Trap Severity | [1-5] |
 | Prerequisites | [list] |
 | Duration | [sessions] |
